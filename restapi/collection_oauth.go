@@ -2,7 +2,9 @@ package restapi
 
 import (
 	"net/http"
+	"regexp"
 
+	"github.com/DeliciousFoodEasyOrder/REST-API/models"
 	"github.com/DeliciousFoodEasyOrder/REST-API/token"
 	"github.com/gorilla/mux"
 )
@@ -40,9 +42,27 @@ func handlerPasswordGrant() http.HandlerFunc {
 			return
 		}
 
-		// TODO: Find user in database
-
-		if !(username == "a" && password == "b") {
+		emailReg := "^[a-zA-Z0-9_-.]+@[a-zA-Z0-9_-]+(.[a-zA-Z0-9_-]+)+$"
+		phoneReg := "^1[0-9]{10}$"
+		isEmail, _ := regexp.MatchString(emailReg, username)
+		isPhone, _ := regexp.MatchString(phoneReg, username)
+		var merchant *models.Merchant
+		if isEmail {
+			merchant = models.MerchantDAO.FindByEmail(username)
+		} else if isPhone {
+			merchant = models.MerchantDAO.FindByPhone(username)
+		} else {
+			merchant = nil
+		}
+		if merchant == nil {
+			formatter.JSON(w, http.StatusBadRequest, NewResp(
+				http.StatusBadRequest,
+				"认证失败",
+				NewErr("Bad parameters", "username not found"),
+			))
+			return
+		}
+		if merchant.Password != password {
 			formatter.JSON(w, http.StatusBadRequest, NewResp(
 				http.StatusBadRequest,
 				"认证失败",
@@ -51,7 +71,8 @@ func handlerPasswordGrant() http.HandlerFunc {
 			return
 		}
 
-		formatter.JSON(w, http.StatusOK, token.NewJWTToken(1, 259200))
+		formatter.JSON(w, http.StatusOK, token.NewJWTToken(
+			merchant.MerchantID, 259200))
 	}
 
 }
