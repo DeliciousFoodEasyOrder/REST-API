@@ -32,7 +32,7 @@ func NewJWTToken(aud int, expiresIn int) *Token {
 		"exp": expiresIn,
 		"aud": aud,
 	})
-	accessSigned, _ := accessToken.SignedString([]byte("key"))
+	accessSigned, _ := accessToken.SignedString([]byte("secret"))
 
 	token := &Token{
 		AccessToken: accessSigned,
