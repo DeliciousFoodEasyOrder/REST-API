@@ -8,8 +8,14 @@ type Merchant struct {
 	Password   string `json:"password"`
 }
 
-// Insert inserts self to database
-func (m *Merchant) Insert() {
+// MerchantDataAccessObject provides access for Model Merchant
+type MerchantDataAccessObject struct{}
+
+// MerchantDAO is an instance of MerchantDataAccessObject
+var MerchantDAO *MerchantDataAccessObject
+
+// InsertOne inserts a merchant to database
+func (*MerchantDataAccessObject) InsertOne(m *Merchant) {
 	_, err := orm.InsertOne(m)
 	if err != nil {
 		panic(err)
@@ -17,7 +23,7 @@ func (m *Merchant) Insert() {
 }
 
 // FindByEmail finds a merchant by email
-func FindByEmail(email string) *Merchant {
+func (*MerchantDataAccessObject) FindByEmail(email string) *Merchant {
 	var merchant Merchant
 	_, err := orm.Table(merchant).Where("Email=?", email).Get(&merchant)
 	if err != nil {
@@ -27,7 +33,7 @@ func FindByEmail(email string) *Merchant {
 }
 
 // FindByPhone finds a merchant by phone
-func FindByPhone(phone string) *Merchant {
+func (*MerchantDataAccessObject) FindByPhone(phone string) *Merchant {
 	var merchant Merchant
 	_, err := orm.Table(merchant).Where("Phone=?", phone).Get(&merchant)
 	if err != nil {
