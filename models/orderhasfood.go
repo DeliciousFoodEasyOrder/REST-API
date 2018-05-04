@@ -1,3 +1,5 @@
+package models
+
 // OrderHasFood Model
 type OrderHasFood struct {
 	OrderID int `json:"order_id"`
