@@ -70,8 +70,8 @@ func NewServer() *negroni.Negroni {
 
 func initRouter(router *mux.Router) {
 
-	// ## JWT Collection
-	routeJWTCollection(router)
+	// ## OAuth Collection
+	routeOAuthCollection(router)
 
 	// ## Merchant Collection
 	// routeMerchantCollection(router);
