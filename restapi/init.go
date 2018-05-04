@@ -1,6 +1,8 @@
 package restapi
 
 import (
+	"net/http"
+
 	"github.com/auth0/go-jwt-middleware"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
@@ -74,7 +76,7 @@ func initRouter(router *mux.Router) {
 	routeOAuthCollection(router)
 
 	// ## Merchant Collection
-	// routeMerchantCollection(router);
+	routeMerchantCollection(router)
 
 	// ## Order Collection
 	// routeOrderCollection(router);
@@ -84,5 +86,13 @@ func initRouter(router *mux.Router) {
 
 	// ## Food Collection
 	// routeFoodCollection(router)
+
+}
+
+func handlerSecure(handler http.HandlerFunc) http.HandlerFunc {
+
+	return func(w http.ResponseWriter, req *http.Request) {
+		jwtMiddleware.HandlerWithNext(w, req, handler)
+	}
 
 }
