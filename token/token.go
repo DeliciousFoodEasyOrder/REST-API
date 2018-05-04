@@ -25,11 +25,12 @@ func NewJWTToken(aud int, expiresIn int) *Token {
 	}
 
 	now := time.Now()
+	duration, _ := time.ParseDuration(strconv.Itoa(expiresIn) + "s")
 	accessToken := jwt.NewWithClaims(signingMethod, jwt.MapClaims{
 		"iss": "DFEO",
 		"sub": "access_token",
 		"iat": now.Unix(),
-		"exp": expiresIn,
+		"exp": now.Add(duration).Unix(),
 		"aud": aud,
 	})
 	accessSigned, _ := accessToken.SignedString([]byte("secret"))
