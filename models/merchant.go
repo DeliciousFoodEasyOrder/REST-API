@@ -2,7 +2,7 @@ package models
 
 // Merchant Model
 type Merchant struct {
-	MerchantID int    `json:"merchant_id"`
+	MerchantID int    `xorm:"AUTOINCR" json:"merchant_id"`
 	Email      string `json:"email"`
 	Phone      string `json:"phone"`
 	Password   string `json:"password"`
@@ -25,9 +25,12 @@ func (*MerchantDataAccessObject) InsertOne(m *Merchant) {
 // FindByEmail finds a merchant by email
 func (*MerchantDataAccessObject) FindByEmail(email string) *Merchant {
 	var merchant Merchant
-	_, err := orm.Table(merchant).Where("Email=?", email).Get(&merchant)
+	has, err := orm.Table(merchant).Where("Email=?", email).Get(&merchant)
 	if err != nil {
 		panic(err)
+	}
+	if !has {
+		return nil
 	}
 	return &merchant
 }
@@ -35,9 +38,12 @@ func (*MerchantDataAccessObject) FindByEmail(email string) *Merchant {
 // FindByPhone finds a merchant by phone
 func (*MerchantDataAccessObject) FindByPhone(phone string) *Merchant {
 	var merchant Merchant
-	_, err := orm.Table(merchant).Where("Phone=?", phone).Get(&merchant)
+	has, err := orm.Table(merchant).Where("Phone=?", phone).Get(&merchant)
 	if err != nil {
 		panic(err)
+	}
+	if !has {
+		return nil
 	}
 	return &merchant
 }
