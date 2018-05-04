@@ -1,9 +1,9 @@
 package main
 
-import "github.com/DeliciousFoodEasyOrder/Restaurant-MS/restapi"
+import "github.com/DeliciousFoodEasyOrder/REST-API/restapi"
 
 func main() {
-	port := ":8080"
+	port := ":80"
 
 	server := restapi.NewServer()
 
