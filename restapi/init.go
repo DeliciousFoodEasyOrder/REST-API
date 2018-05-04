@@ -15,6 +15,12 @@ type Resp struct {
 	Data interface{} `json:"data"`
 }
 
+// Err will be sent as data when error occurs
+type Err struct {
+	Error            string `json:"error"`
+	ErrorDescription string `json:"error_description"`
+}
+
 var (
 	formatter     *render.Render
 	jwtMiddleware *jwtmiddleware.JWTMiddleware
@@ -39,6 +45,14 @@ func NewResp(code int, msg string, data interface{}) *Resp {
 		Code: code,
 		Msg:  msg,
 		Data: data,
+	}
+}
+
+// NewErr returns a new instance of Struct Err
+func NewErr(err, errDes string) *Err {
+	return &Err{
+		Error:            err,
+		ErrorDescription: errDes,
 	}
 }
 
