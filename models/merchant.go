@@ -15,11 +15,9 @@ type MerchantDataAccessObject struct{}
 var MerchantDAO *MerchantDataAccessObject
 
 // InsertOne inserts a merchant to database
-func (*MerchantDataAccessObject) InsertOne(m *Merchant) {
+func (*MerchantDataAccessObject) InsertOne(m *Merchant) error {
 	_, err := orm.InsertOne(m)
-	if err != nil {
-		panic(err)
-	}
+	return err
 }
 
 // FindByEmail finds a merchant by email

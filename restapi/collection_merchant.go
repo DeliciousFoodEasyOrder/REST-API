@@ -99,7 +99,15 @@ func handlerCreateMerchant() http.HandlerFunc {
 			return
 		}
 
-		models.MerchantDAO.InsertOne(&merchant)
+		err = models.MerchantDAO.InsertOne(&merchant)
+		if err != nil {
+			formatter.JSON(w, http.StatusInternalServerError, NewResp(
+				http.StatusInternalServerError,
+				"商户注册失败",
+				NewErr("Database error", "see server log for more information"),
+			))
+			return
+		}
 		formatter.JSON(w, http.StatusCreated, NewResp(
 			http.StatusCreated,
 			"商户注册成功",
