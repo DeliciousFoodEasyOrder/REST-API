@@ -66,7 +66,7 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
             "merchant_id":null,
             "email":"example@email.com",
             "phone":"12345678901",
-            "password":"password",
+            "password":"password"
         }
 
 + Response 201 (application/json)
@@ -109,22 +109,22 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                 "seat_id":1,
                 "customer_id":1,
                 "merchant_id":1,
-                "order_time":"2018-01-01 12:00:00",
-                "complete_time":"2018-01-02 12:00:00",
+                "order_time":"2018-01-01T12:00:00+08:00",
+                "complete_time":"2018-01-02T12:00:00+08:00",
                 "foods":[{
                     "food_id":1,
                     "name":"鱼香肉丝",
                     "description":"香喷喷的鱼香肉丝",
                     "price":"9.99",
                     "merchant_id":1,
-                    "amount":2,
+                    "amount":2
                 },{
                     "food_id":2,
                     "name":"兰州拉面",
                     "description":"清真的拉面",
                     "price":"39.99",
                     "merchant_id":1,
-                    "amount":1,
+                    "amount":1
                 }]
             },{
                 "order_id":2,
@@ -132,15 +132,15 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                 "seat_id":1,
                 "customer_id":1,
                 "merchant_id":1,
-                "order_time":"2018-01-01 12:00:00",
-                "complete_time":"2018-01-02 12:00:00",
+                "order_time":"2018-01-01T12:00:00+08:00",
+                "complete_time":"2018-01-02T12:00:00+08:00",
                 "foods":[{
                     "food_id":1,
                     "name":"鱼香肉丝",
                     "description":"香喷喷的鱼香肉丝",
                     "price":"9.99",
                     "merchant_id":1,
-                    "amount":2,
+                    "amount":2
                 }]
             }]
         }
@@ -168,8 +168,8 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                 "seat_id":1,
                 "customer_id":1,
                 "merchant_id":1,
-                "order_time":"2018-01-01 12:00:00",
-                "complete_time":"2018-01-02 12:00:00",
+                "order_time":"2018-01-01T12:00:00+08:00",
+                "complete_time":"2018-01-02T12:00:00+08:00",
                 "foods":[{
                     "food_id":1,
                     "name":"鱼香肉丝",
@@ -204,8 +204,8 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                 "seat_id":1,
                 "customer_id":1,
                 "merchant_id":1,
-                "order_time":"2018-01-01 12:00:00",
-                "complete_time":"2018-01-02 12:00:00",
+                "order_time":"2018-01-01T12:00:00+08:00",
+                "complete_time":"2018-01-02T12:00:00+08:00",
                 "foods":[{
                     "food_id":1,
                     "name":"鱼香肉丝",
@@ -234,8 +234,8 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                 "seat_id":1,
                 "customer_id":1,
                 "merchant_id":1,
-                "order_time":"2018-01-01 12:00:00",
-                "complete_time":"2018-01-02 12:00:00",
+                "order_time":"2018-01-01T12:00:00+08:00",
+                "complete_time":"2018-01-02T12:00:00+08:00",
                 "foods":[{
                     "food_id":1,
                     "name":"鱼香肉丝",
@@ -283,8 +283,8 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                 "seat_id":1,
                 "customer_id":1,
                 "merchant_id":1,
-                "order_time":"2018-01-01 12:00:00",
-                "complete_time":"2018-01-02 12:00:00",
+                "order_time":"2018-01-01T12:00:00+08:00",
+                "complete_time":"2018-01-02T12:00:00+08:00",
                 "foods":[{
                     "food_id":1,
                     "name":"鱼香肉丝",
@@ -335,11 +335,7 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
             }]
         }
         
-### Create a seat [POST /seats{?merchant_id}]
-
-+ Parameters
-
-    + merchant_id : 1 (int, required) - Merchant ID
+### Create a seat [POST /seats]
     
 + Request (application/json)
 
