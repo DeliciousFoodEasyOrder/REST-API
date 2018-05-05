@@ -20,6 +20,19 @@ func (*MerchantDataAccessObject) InsertOne(m *Merchant) error {
 	return err
 }
 
+// FindByID finds a merchant by MerchantID
+func (*MerchantDataAccessObject) FindByID(merchantID int) *Merchant {
+	var merchant Merchant
+	has, err := orm.Table(merchant).ID(merchantID).Get(&merchant)
+	if err != nil {
+		panic(err)
+	}
+	if !has {
+		return nil
+	}
+	return &merchant
+}
+
 // FindByEmail finds a merchant by email
 func (*MerchantDataAccessObject) FindByEmail(email string) *Merchant {
 	var merchant Merchant
