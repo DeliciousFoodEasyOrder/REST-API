@@ -2,6 +2,7 @@ package restapi
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/auth0/go-jwt-middleware"
 	"github.com/dgrijalva/jwt-go"
@@ -92,7 +93,22 @@ func initRouter(router *mux.Router) {
 func handlerSecure(handler http.HandlerFunc) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, req *http.Request) {
-		jwtMiddleware.HandlerWithNext(w, req, handler)
+		err := jwtMiddleware.CheckJWT(w, req)
+		if err != nil {
+			formatter.JSON(w, http.StatusUnauthorized, NewResp(
+				http.StatusUnauthorized,
+				"Permission denied",
+				NewErr("Permission denied", err.Error()),
+			))
+			return
+		}
+		if handler != nil {
+			handler(w, req)
+		}
 	}
 
+}
+
+func getTokenString(req *http.Request) string {
+	return strings.Split(req.Header.Get("Authorization"), " ")[1]
 }
