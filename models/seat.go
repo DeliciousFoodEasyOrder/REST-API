@@ -15,11 +15,9 @@ type SeatDataAccessObject struct{}
 var SeatDAO *SeatDataAccessObject
 
 // InsertOne inserts a seat to database
-func (*SeatDataAccessObject) InsertOne(s *Seat) {
+func (*SeatDataAccessObject) InsertOne(s *Seat) error {
 	_, err := orm.InsertOne(s)
-	if err != nil {
-		panic(err)
-	}
+	return err
 }
 
 // FindByMerchantID finds a seat by merchant_id
