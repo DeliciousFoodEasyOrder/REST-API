@@ -8,8 +8,10 @@ type Seat struct {
 	MerchantID int    `json:"merchant_id"`
 }
 
+// SeatDataAccessObject provides access for Model Seat
 type SeatDataAccessObject struct{}
 
+// SeatDAO is an instance of SeatDataAccessObject
 var SeatDAO *SeatDataAccessObject
 
 // InsertOne inserts a seat to database
@@ -20,7 +22,7 @@ func (*SeatDataAccessObject) InsertOne(s *Seat) {
 	}
 }
 
-// FindByNumber finds a seat by id
+// FindByID finds a seat by id
 func (*SeatDataAccessObject) FindByID(seatID int) *Seat {
 	var seat Seat
 	has, err := orm.Table(seat).ID(seatID).Get(&seat)
@@ -33,6 +35,7 @@ func (*SeatDataAccessObject) FindByID(seatID int) *Seat {
 	return &seat
 }
 
+// DeleteBySeatID deletes a seat by id
 func (*SeatDataAccessObject) DeleteBySeatID(seatID int) {
 	var seat Seat
 	_, err := orm.Table(seat).ID(seatID).Delete(&seat)
@@ -41,6 +44,7 @@ func (*SeatDataAccessObject) DeleteBySeatID(seatID int) {
 	}
 }
 
+// UpdateOne updates a seat by id of parameter
 func (*SeatDataAccessObject) UpdateOne(seat *Seat) {
 	_, err := orm.Table(seat).ID(seat.SeatID).Update(seat)
 	if err != nil {
