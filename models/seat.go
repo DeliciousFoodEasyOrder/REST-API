@@ -22,6 +22,17 @@ func (*SeatDataAccessObject) InsertOne(s *Seat) {
 	}
 }
 
+// FindByMerchantID finds a seat by merchant_id
+func (*SeatDataAccessObject) FindByMerchantID(merchantID int) []Seat {
+	seatList := make([]Seat, 0)
+	err := orm.Table(seatList).Where("MerchantID=?", merchantID).Find(&seatList)
+	if err != nil {
+		panic(err)
+	}
+
+	return seatList
+}
+
 // FindByID finds a seat by id
 func (*SeatDataAccessObject) FindByID(seatID int) *Seat {
 	var seat Seat
