@@ -3,6 +3,7 @@ package restapi
 import (
 	"encoding/json"
 	"net/http"
+	"regexp"
 
 	"github.com/DeliciousFoodEasyOrder/REST-API/models"
 	"github.com/gorilla/mux"
@@ -71,6 +72,19 @@ func handlerCreateMerchant() http.HandlerFunc {
 				NewErr("Bad data", "data format may be incorrect"),
 			))
 			panic(err)
+		}
+
+		emailReg := "^[a-zA-Z0-9_-.]+@[a-zA-Z0-9_-]+(.[a-zA-Z0-9_-]+)+$"
+		phoneReg := "^1[0-9]{10}$"
+		validEmail, _ := regexp.MatchString(emailReg, merchant.Email)
+		validPhone, _ := regexp.MatchString(phoneReg, merchant.Phone)
+		if !validEmail || !validPhone {
+			formatter.JSON(w, http.StatusBadRequest, NewResp(
+				http.StatusBadRequest,
+				"商户注册失败",
+				NewErr("Bad data", "email or phone invalid"),
+			))
+			return
 		}
 
 		var m *models.Merchant
