@@ -20,7 +20,7 @@ func routeOAuthCollection(router *mux.Router) {
 func handlerPasswordGrant() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, req *http.Request) {
-		grantType := req.FormValue("password")
+		grantType := req.FormValue("grant_type")
 		username := req.FormValue("username")
 		password := req.FormValue("password")
 
@@ -42,7 +42,7 @@ func handlerPasswordGrant() http.HandlerFunc {
 			return
 		}
 
-		emailReg := "^[a-zA-Z0-9_-.]+@[a-zA-Z0-9_-]+(.[a-zA-Z0-9_-]+)+$"
+		emailReg := "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9_-]+(.[a-zA-Z0-9_-]+)+$"
 		phoneReg := "^1[0-9]{10}$"
 		isEmail, _ := regexp.MatchString(emailReg, username)
 		isPhone, _ := regexp.MatchString(phoneReg, username)
