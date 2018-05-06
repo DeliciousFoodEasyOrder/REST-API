@@ -8,7 +8,7 @@ import (
 
 // Order Model
 type Order struct {
-	OrderID      int       `xorm:"AUTOINCR" json:"order_id"`
+	OrderID      int       `xorm:"PK AUTOINCR" json:"order_id"`
 	Status       int       `json:"status"`
 	SeatID       int       `json:"seat_id"`
 	CustomerID   int       `json:"customer_id"`
@@ -51,11 +51,11 @@ func (*OrderDataAccessObject) FindByMerchantIDAndStatus(
 	merchantID, status int) []OrderWithFoods {
 
 	fullOrders := make([]OrderFull, 0)
-	session := OrderDAO.joinFullOrder().Where("MerchantID=?", merchantID)
+	session := OrderDAO.joinFullOrder().Where("Order.MerchantID=?", merchantID)
 	if status != -1 {
 		session.Where("Status=?", status)
 	}
-	err := session.Asc("OrderID").Find(&fullOrders)
+	err := session.Asc("Order.OrderID").Find(&fullOrders)
 	if err != nil {
 		panic(err)
 	}
@@ -70,6 +70,7 @@ func (*OrderDataAccessObject) FindByMerchantIDAndStatus(
 				Foods: make([]FoodWithAmount, 0),
 			})
 			i++
+			currentID = fullOrder.Order.OrderID
 		}
 		orders[i].Foods = append(orders[i].Foods, FoodWithAmount{
 			Food:   fullOrder.Food,
@@ -83,7 +84,8 @@ func (*OrderDataAccessObject) FindByMerchantIDAndStatus(
 // FindByOrderID finds an Order by its ID
 func (*OrderDataAccessObject) FindByOrderID(orderID int) *OrderWithFoods {
 	fullOrders := make([]OrderFull, 0)
-	err := OrderDAO.joinFullOrder().ID(orderID).Find(&fullOrders)
+	err := OrderDAO.joinFullOrder().Where("Order.OrderID=?", orderID).
+		Find(&fullOrders)
 	if err != nil {
 		panic(err)
 	}
@@ -128,7 +130,7 @@ func (*OrderDataAccessObject) InsertOne(order *OrderWithFoods) error {
 
 // UpdateOne updates an order
 func (*OrderDataAccessObject) UpdateOne(order *Order) (*OrderWithFoods, error) {
-	_, err := orm.Update(order)
+	_, err := orm.Id(order.OrderID).Update(order)
 	if err != nil {
 		return nil, err
 	}

@@ -2,7 +2,7 @@ package models
 
 // Food Model
 type Food struct {
-	FoodID      int     `xorm:"AUTOINCR" json:"food_id"`
+	FoodID      int     `xorm:"PK AUTOINCR" json:"food_id"`
 	Name        string  `json:"name"`
 	Description string  `json:"description"`
 	Price       float32 `json:"price"`
@@ -23,7 +23,7 @@ var FoodDAO *FoodDataAccessObject
 
 // InsertOne inserts a food to database
 func (*FoodDataAccessObject) InsertOne(food *Food) error {
-	_, err := orm.InsertOne(&food)
+	_, err := orm.InsertOne(food)
 	return err
 }
 
