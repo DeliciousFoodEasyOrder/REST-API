@@ -59,7 +59,7 @@ func handlerDeleteFood() http.HandlerFunc {
 			return
 		}
 
-		if food.MerchantID != claims["aud"] {
+		if food.MerchantID != int(claims["aud"].(float64)) {
 			formatter.JSON(w, http.StatusUnauthorized, NewResp(
 				http.StatusUnauthorized,
 				"删除菜品失败",
@@ -96,6 +96,7 @@ func handlerCreateFood() http.HandlerFunc {
 				"创建菜品失败",
 				NewErr("Bad parameters", "merchant not found"),
 			))
+			return
 		}
 
 		err = models.FoodDAO.InsertOne(&food)
@@ -144,7 +145,7 @@ func handlerGetFood() http.HandlerFunc {
 			return
 		}
 
-		if food.MerchantID != claims["aud"] {
+		if food.MerchantID != int(claims["aud"].(float64)) {
 			formatter.JSON(w, http.StatusBadRequest, NewResp(
 				http.StatusBadRequest,
 				"获取菜品失败",
@@ -166,6 +167,7 @@ func handlerListFoods() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, req *http.Request) {
 		merchantIDStr := req.FormValue("merchant_id")
+		merchantID, _ := strconv.Atoi(merchantIDStr)
 		claims := token.ParseClaims(getTokenString(req))
 
 		if cond, _ := regexp.MatchString("[1-9][0-9]*", merchantIDStr); !cond {
@@ -177,7 +179,7 @@ func handlerListFoods() http.HandlerFunc {
 			return
 		}
 
-		if merchantIDStr != claims["aud"] {
+		if merchantID != int(claims["aud"].(float64)) {
 			formatter.JSON(w, http.StatusBadRequest, NewResp(
 				http.StatusBadRequest,
 				"获取菜品列表失败",
@@ -185,8 +187,6 @@ func handlerListFoods() http.HandlerFunc {
 			))
 			return
 		}
-
-		merchantID, _ := strconv.Atoi(merchantIDStr)
 
 		if models.MerchantDAO.FindByID(merchantID) == nil {
 			formatter.JSON(w, http.StatusBadRequest, NewResp(

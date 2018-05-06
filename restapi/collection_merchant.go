@@ -74,7 +74,7 @@ func handlerCreateMerchant() http.HandlerFunc {
 			panic(err)
 		}
 
-		emailReg := "^[a-zA-Z0-9_-.]+@[a-zA-Z0-9_-]+(.[a-zA-Z0-9_-]+)+$"
+		emailReg := "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9_-]+(.[a-zA-Z0-9_-]+)+$"
 		phoneReg := "^1[0-9]{10}$"
 		validEmail, _ := regexp.MatchString(emailReg, merchant.Email)
 		validPhone, _ := regexp.MatchString(phoneReg, merchant.Phone)

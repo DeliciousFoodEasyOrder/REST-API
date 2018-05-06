@@ -2,10 +2,10 @@ package restapi
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"regexp"
 	"strconv"
-	"time"
 
 	"github.com/DeliciousFoodEasyOrder/REST-API/models"
 
@@ -39,6 +39,7 @@ func handlerListOrders() http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
 		claims := token.ParseClaims(getTokenString(req))
 		merchantIDStr := req.FormValue("merchant_id")
+		merchantID, _ := strconv.Atoi(merchantIDStr)
 		statusStr := req.FormValue("status")
 
 		if cond, _ := regexp.MatchString("[1-9][0-9]*", merchantIDStr); !cond {
@@ -60,7 +61,7 @@ func handlerListOrders() http.HandlerFunc {
 			return
 		}
 
-		if merchantIDStr != claims["aud"] {
+		if merchantID != int(claims["aud"].(float64)) {
 			formatter.JSON(w, http.StatusUnauthorized, NewResp(
 				http.StatusUnauthorized,
 				"获取订单列表失败",
@@ -69,8 +70,7 @@ func handlerListOrders() http.HandlerFunc {
 			return
 		}
 
-		var merchantID, status int
-		merchantID, _ = strconv.Atoi(merchantIDStr)
+		var status int
 		if statusStr == "" {
 			status = -1
 		} else {
@@ -102,6 +102,15 @@ func handlerGetOrder() http.HandlerFunc {
 
 		orderID, _ := strconv.Atoi(orderIDStr)
 		order := models.OrderDAO.FindByOrderID(orderID)
+		if order == nil {
+			formatter.JSON(w, http.StatusBadRequest, NewResp(
+				http.StatusBadRequest,
+				"获取订单失败",
+				NewErr("Bad parameters", "order not found"),
+			))
+			return
+		}
+
 		formatter.JSON(w, http.StatusOK, NewResp(
 			http.StatusOK,
 			"获取订单成功",
@@ -127,7 +136,7 @@ func handlerCreateOrder() http.HandlerFunc {
 			panic(err)
 		}
 
-		if order.MerchantID != claims["aud"] {
+		if order.MerchantID != int(claims["aud"].(float64)) {
 			formatter.JSON(w, http.StatusBadRequest, NewResp(
 				http.StatusBadRequest,
 				"创建订单失败",
@@ -181,38 +190,22 @@ func handlerPatchOrder() http.HandlerFunc {
 			return
 		}
 
-		var data map[string]string
+		var data models.Order
 		decoder := json.NewDecoder(req.Body)
 		decoder.Decode(&data)
-		for key, val := range data {
-			switch key {
-			case "status":
-				old.Status, _ = strconv.Atoi(val)
-				break
-			case "seat_id":
-				old.SeatID, _ = strconv.Atoi(val)
-				break
-			case "customer_id":
-				old.CustomerID, _ = strconv.Atoi(val)
-				break
-			case "order_time":
-				old.OrderTime, _ = time.Parse(time.RFC3339, val)
-				break
-			case "complete_time":
-				old.CompleteTime, _ = time.Parse(time.RFC3339, val)
-				break
-			default:
-				formatter.JSON(w, http.StatusBadRequest, NewResp(
-					http.StatusBadRequest,
-					"修改订单失败",
-					NewErr("Bad parameters", `Request contains invalid fields 
-or fields cannot be modified`),
-				))
-				return
-			}
+		data.OrderID = orderID
+		fmt.Println(data)
+
+		if data.MerchantID != 0 {
+			formatter.JSON(w, http.StatusBadRequest, NewResp(
+				http.StatusBadRequest,
+				"修改订单失败",
+				NewErr("Bad paramters", "invalid modify"),
+			))
+			return
 		}
 
-		orderWithFoods, err := models.OrderDAO.UpdateOne(&old.Order)
+		orderWithFoods, err := models.OrderDAO.UpdateOne(&data)
 		if err != nil {
 			formatter.JSON(w, http.StatusInternalServerError, NewResp(
 				http.StatusInternalServerError,
