@@ -125,7 +125,6 @@ func handlerCreateOrder() http.HandlerFunc {
 				NewErr("Bad parameters", "please check your request format"),
 			))
 			panic(err)
-			return
 		}
 
 		if order.MerchantID != claims["aud"] {
@@ -135,7 +134,6 @@ func handlerCreateOrder() http.HandlerFunc {
 				NewErr("Permission denied", "id mismatch"),
 			))
 			panic(err)
-			return
 		}
 
 		err = models.OrderDAO.InsertOne(&order)
@@ -146,7 +144,6 @@ func handlerCreateOrder() http.HandlerFunc {
 				NewErr("Database error", "see server log for more information"),
 			))
 			panic(err)
-			return
 		}
 
 		formatter.JSON(w, http.StatusCreated, NewResp(
@@ -223,7 +220,6 @@ or fields cannot be modified`),
 				NewErr("Database error", "see server log for more information"),
 			))
 			panic(err)
-			return
 		}
 		formatter.JSON(w, http.StatusCreated, NewResp(
 			http.StatusCreated,

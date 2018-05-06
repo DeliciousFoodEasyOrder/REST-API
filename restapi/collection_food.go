@@ -88,7 +88,6 @@ func handlerCreateFood() http.HandlerFunc {
 				NewErr("Bad parameters", "please check your data format"),
 			))
 			panic(err)
-			return
 		}
 
 		if models.MerchantDAO.FindByID(food.MerchantID) == nil {
@@ -107,7 +106,6 @@ func handlerCreateFood() http.HandlerFunc {
 				NewErr("Database error", "see server log for more details"),
 			))
 			panic(err)
-			return
 		}
 
 		formatter.JSON(w, http.StatusCreated, NewResp(
