@@ -80,13 +80,13 @@ func initRouter(router *mux.Router) {
 	routeMerchantCollection(router)
 
 	// ## Order Collection
-	// routeOrderCollection(router);
+	routeOrderCollection(router)
 
 	// ## Seat Collection
-	// routeSeatCollection(router);
+	routeSeatCollection(router)
 
 	// ## Food Collection
-	// routeFoodCollection(router)
+	routeFoodCollection(router)
 
 }
 
