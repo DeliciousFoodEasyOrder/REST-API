@@ -3,7 +3,12 @@ package restapi
 import (
 	"encoding/json"
 	"net/http"
+	"regexp"
+	"strconv"
 
+	"github.com/DeliciousFoodEasyOrder/REST-API/models"
+
+	"github.com/DeliciousFoodEasyOrder/REST-API/token"
 	"github.com/gorilla/mux"
 )
 
@@ -25,7 +30,7 @@ func handlerListSeats() http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
 		claims := token.ParseClaims(getTokenString(req))
 		merchantIDStr := req.FormValue("merchant_id")
-		var []seatList *models.Seat
+		merchantID, _ := strconv.Atoi(merchantIDStr)
 		if cond, _ := regexp.MatchString("[1-9][0-9]*", merchantIDStr); !cond {
 			formatter.JSON(w, http.StatusBadRequest, NewResp(
 				http.StatusBadRequest,
@@ -34,7 +39,7 @@ func handlerListSeats() http.HandlerFunc {
 			))
 			return
 		}
-		if merchantIDStr != claims["aud"] {
+		if merchantID != int(claims["aud"].(float64)) {
 			formatter.JSON(w, http.StatusUnauthorized, NewResp(
 				http.StatusUnauthorized,
 				"获取座位列表失败",
@@ -43,8 +48,6 @@ func handlerListSeats() http.HandlerFunc {
 			return
 		}
 
-		var merchantID int
-		merchantID, _ = strconv.Atoi(merchantIDStr)
 		seatList := models.SeatDAO.FindByMerchantID(merchantID)
 		formatter.JSON(w, http.StatusOK, NewResp(
 			http.StatusOK,
@@ -56,7 +59,6 @@ func handlerListSeats() http.HandlerFunc {
 
 func handlerCreateSeat() http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-
 		claims := token.ParseClaims(getTokenString(req))
 		decoder := json.NewDecoder(req.Body)
 		var seat models.Seat
@@ -71,7 +73,7 @@ func handlerCreateSeat() http.HandlerFunc {
 			return
 		}
 
-		if seat.SeatID != claims["aud"] {
+		if seat.MerchantID != int(claims["aud"].(float64)) {
 			formatter.JSON(w, http.StatusBadRequest, NewResp(
 				http.StatusBadRequest,
 				"创建座位失败",
@@ -81,7 +83,7 @@ func handlerCreateSeat() http.HandlerFunc {
 			return
 		}
 
-		err = models.SeatDAO.InsertOne(&order)
+		err = models.SeatDAO.InsertOne(&seat)
 		if err != nil {
 			formatter.JSON(w, http.StatusInternalServerError, NewResp(
 				http.StatusInternalServerError,
@@ -96,15 +98,13 @@ func handlerCreateSeat() http.HandlerFunc {
 			"创建座位成功",
 			seat,
 		))
-    }
+	}
 }
 
 func handlerDeleteSeat() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, req *http.Request) {
-		//req.ParseForm()
 		seatIDStr := mux.Vars(req)["ID"]
-		//seatID, _ :=  strconv.Atoi(mux.Vars(req)["ID"])
 		if cond, _ := regexp.MatchString("[1-9][0-9]*", seatIDStr); !cond {
 			formatter.JSON(w, http.StatusBadRequest, NewResp(
 				http.StatusBadRequest,
@@ -127,7 +127,7 @@ func handlerDeleteSeat() http.HandlerFunc {
 			return
 		}
 
-		if seat.MerchantID != claims["aud"] {
+		if seat.MerchantID != int(claims["aud"].(float64)) {
 			formatter.JSON(w, http.StatusUnauthorized, NewResp(
 				http.StatusUnauthorized,
 				"删除座位失败",
@@ -136,7 +136,7 @@ func handlerDeleteSeat() http.HandlerFunc {
 			return
 		}
 
-		models.SeatDao.DeleteBySeatID(seatID)
+		models.SeatDAO.DeleteBySeatID(seatID)
 		formatter.JSON(w, http.StatusNoContent, nil)
 	}
 
