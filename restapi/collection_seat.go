@@ -70,7 +70,6 @@ func handlerCreateSeat() http.HandlerFunc {
 				NewErr("Bad parameters", "please check your request format"),
 			))
 			panic(err)
-			return
 		}
 
 		if seat.MerchantID != int(claims["aud"].(float64)) {
@@ -80,7 +79,6 @@ func handlerCreateSeat() http.HandlerFunc {
 				NewErr("Permission denied", "id mismatch"),
 			))
 			panic(err)
-			return
 		}
 
 		err = models.SeatDAO.InsertOne(&seat)
@@ -91,7 +89,6 @@ func handlerCreateSeat() http.HandlerFunc {
 				NewErr("Database error", "see server log for more information"),
 			))
 			panic(err)
-			return
 		}
 		formatter.JSON(w, http.StatusCreated, NewResp(
 			http.StatusCreated,
