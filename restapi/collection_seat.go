@@ -15,12 +15,15 @@ import (
 func routeSeatCollection(router *mux.Router) {
 	base := "/seats"
 
+	// ### List seats [GET /seats{?merchant_id}]
 	router.HandleFunc(base, handlerSecure(handlerListSeats())).
 		Methods(http.MethodGet)
 
+	// ### Create a seat [POST /seats]
 	router.HandleFunc(base, handlerSecure(handlerCreateSeat())).
 		Methods(http.MethodPost)
 
+	// ### Delete a seat [DELETE /seats/{seat_id}]
 	router.HandleFunc(base+"/{ID}", handlerSecure(handlerDeleteSeat())).
 		Methods(http.MethodDelete)
 }
