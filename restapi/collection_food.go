@@ -16,7 +16,7 @@ func routeFoodCollection(router *mux.Router) {
 	base := "/foods"
 
 	// ### List foods [GET /foods{?merchant_id}]
-	router.HandleFunc(base, handlerSecure(handlerListFoods())).
+	router.HandleFunc(base, handlerListFoods()).
 		Methods(http.MethodGet)
 
 	// ### Get a food [GET /foods/{food_id}]
@@ -168,22 +168,12 @@ func handlerListFoods() http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
 		merchantIDStr := req.FormValue("merchant_id")
 		merchantID, _ := strconv.Atoi(merchantIDStr)
-		claims := token.ParseClaims(getTokenString(req))
 
 		if cond, _ := regexp.MatchString("[1-9][0-9]*", merchantIDStr); !cond {
 			formatter.JSON(w, http.StatusBadRequest, NewResp(
 				http.StatusBadRequest,
 				"获取菜品列表失败",
 				NewErr("Bad parameters", "merchant_id must be a number"),
-			))
-			return
-		}
-
-		if merchantID != int(claims["aud"].(float64)) {
-			formatter.JSON(w, http.StatusBadRequest, NewResp(
-				http.StatusBadRequest,
-				"获取菜品列表失败",
-				NewErr("Permission denied", "id mismatch"),
 			))
 			return
 		}
