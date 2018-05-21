@@ -9,10 +9,12 @@ import (
 
 // Token is a struct for token authorization
 type Token struct {
-	AccessToken string     `json:"access_token"`
-	TokenType   string     `json:"token_type"`
-	ExpiresIn   int        `json:"expires_in"`
-	IssuedAt    *time.Time `json:"issued_at"`
+	AccessToken  string `json:"access_token"`
+	TokenType    string `json:"token_type"`
+	ExpiresIn    int    `json:"expires_in"`
+	RefreshToken string `json:"refresh_token"`
+	Scope        string `json:"scope"`
+	IssuedAt     *time.Time
 }
 
 // NewJWTToken issues a new token with type "JWT"
