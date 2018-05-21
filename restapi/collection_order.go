@@ -16,8 +16,9 @@ import (
 func routeOrderCollection(router *mux.Router) {
 	base := "/orders"
 
-	// ### List orders [GET /orders{?merchant_id,status}]
-	router.HandleFunc(base, handlerSecure(handlerListOrders())).
+	// ### List orders by merchant id [GET /orders{?merchant_id,status}]
+	// ### List orders by customer id [GET /orders{?customer_id,status}]
+	router.HandleFunc(base, handlerListOrders()).
 		Methods(http.MethodGet)
 
 	// ### Get an order [GET /orders/{id}]
@@ -25,7 +26,7 @@ func routeOrderCollection(router *mux.Router) {
 		Methods(http.MethodGet)
 
 	// ### Create an order [POST /orders]
-	router.HandleFunc(base, handlerSecure(handlerCreateOrder())).
+	router.HandleFunc(base, handlerCreateOrder()).
 		Methods(http.MethodPost)
 
 	// ### Update an order partially [PATCH /orders/{id}]
@@ -37,10 +38,57 @@ func routeOrderCollection(router *mux.Router) {
 func handlerListOrders() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, req *http.Request) {
+		statusStr := req.FormValue("status")
+		customerIDStr := req.FormValue("customer_id")
+
+		if customerIDStr != "" {
+			if cond, _ := regexp.MatchString("[1-9][0-9]*", customerIDStr); !cond {
+				formatter.JSON(w, http.StatusBadRequest, NewResp(
+					http.StatusBadRequest,
+					"获取订单列表失败",
+					NewErr("Bad parameters", "customer_id must be a number"),
+				))
+				return
+			}
+
+			if cond, _ := regexp.MatchString("0|1", statusStr); !cond &&
+				statusStr != "" {
+				formatter.JSON(w, http.StatusBadRequest, NewResp(
+					http.StatusBadRequest,
+					"获取订单列表失败",
+					NewErr("Bad parameters", "status must be 0, 1 or empty"),
+				))
+				return
+			}
+
+			customerID, _ := strconv.Atoi(customerIDStr)
+			var status int
+			if statusStr == "" {
+				status = -1
+			} else {
+				status, _ = strconv.Atoi(statusStr)
+			}
+			orders := models.OrderDAO.FindByCustomerIDAndStatus(customerID, status)
+			formatter.JSON(w, http.StatusOK, NewResp(
+				http.StatusOK,
+				"获取订单列表成功",
+				orders,
+			))
+			return
+		}
+
+		err := jwtMiddleware.CheckJWT(w, req)
+		if err != nil {
+			formatter.JSON(w, http.StatusUnauthorized, NewResp(
+				http.StatusUnauthorized,
+				"Permission denied",
+				NewErr("Permission denied", err.Error()),
+			))
+			return
+		}
 		claims := token.ParseClaims(getTokenString(req))
 		merchantIDStr := req.FormValue("merchant_id")
 		merchantID, _ := strconv.Atoi(merchantIDStr)
-		statusStr := req.FormValue("status")
 
 		if cond, _ := regexp.MatchString("[1-9][0-9]*", merchantIDStr); !cond {
 			formatter.JSON(w, http.StatusBadRequest, NewResp(
@@ -123,7 +171,6 @@ func handlerGetOrder() http.HandlerFunc {
 func handlerCreateOrder() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, req *http.Request) {
-		claims := token.ParseClaims(getTokenString(req))
 		decoder := json.NewDecoder(req.Body)
 		var order models.OrderWithFoods
 		err := decoder.Decode(&order)
@@ -132,15 +179,6 @@ func handlerCreateOrder() http.HandlerFunc {
 				http.StatusBadRequest,
 				"创建订单失败",
 				NewErr("Bad parameters", "please check your request format"),
-			))
-			panic(err)
-		}
-
-		if order.MerchantID != int(claims["aud"].(float64)) {
-			formatter.JSON(w, http.StatusBadRequest, NewResp(
-				http.StatusBadRequest,
-				"创建订单失败",
-				NewErr("Permission denied", "id mismatch"),
 			))
 			panic(err)
 		}
