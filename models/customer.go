@@ -6,3 +6,9 @@ type Customer struct {
 	WechatID   string  `json:"wechat_id"`
 	Balance    float32 `json:"balance"`
 }
+
+// CustomerDataAccessObject provides access for Model Customer
+type CustomerDataAccessObject struct{}
+
+// CustomerDAO is an instance of CustomerDataAccessObject
+var CustomerDAO *CustomerDataAccessObject
