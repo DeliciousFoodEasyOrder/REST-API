@@ -81,6 +81,44 @@ func (*OrderDataAccessObject) FindByMerchantIDAndStatus(
 	return orders
 }
 
+// FindByCustomerIDAndStatus finds orders with customerID and status specified
+// Parameters
+// - customerID : id of a customer
+// - status : status of an order, -1 if no status specified
+func (*OrderDataAccessObject) FindByCustomerIDAndStatus(
+	customerID, status int) []OrderWithFoods {
+
+	fullOrders := make([]OrderFull, 0)
+	session := OrderDAO.joinFullOrder().Where("Order.CustomerID=?", customerID)
+	if status != -1 {
+		session.Where("Status=?", status)
+	}
+	err := session.Asc("Order.OrderID").Find(&fullOrders)
+	if err != nil {
+		panic(err)
+	}
+
+	orders := make([]OrderWithFoods, 0)
+	currentID := 0
+	i := -1
+	for _, fullOrder := range fullOrders {
+		if fullOrder.Order.OrderID != currentID {
+			orders = append(orders, OrderWithFoods{
+				Order: fullOrder.Order,
+				Foods: make([]FoodWithAmount, 0),
+			})
+			i++
+			currentID = fullOrder.Order.OrderID
+		}
+		orders[i].Foods = append(orders[i].Foods, FoodWithAmount{
+			Food:   fullOrder.Food,
+			Amount: fullOrder.OrderHasFood.Amount,
+		})
+	}
+
+	return orders
+}
+
 // FindByOrderID finds an Order by its ID
 func (*OrderDataAccessObject) FindByOrderID(orderID int) *OrderWithFoods {
 	fullOrders := make([]OrderFull, 0)
