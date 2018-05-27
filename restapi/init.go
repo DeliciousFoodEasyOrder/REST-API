@@ -88,6 +88,8 @@ func initRouter(router *mux.Router) {
 	// ## Food Collection
 	routeFoodCollection(router)
 
+	// ## Customer Collection
+	routeCustomerCollection(router)
 }
 
 func handlerSecure(handler http.HandlerFunc) http.HandlerFunc {
