@@ -93,7 +93,7 @@ func handlerCreateMerchant() http.HandlerFunc {
 		if m != nil {
 			formatter.JSON(w, http.StatusBadRequest, NewResp(
 				http.StatusBadRequest,
-				"商户注册失败",
+				"商户注册失败QAQ",
 				NewErr("Bad data", "email or phone already exist"),
 			))
 			return
