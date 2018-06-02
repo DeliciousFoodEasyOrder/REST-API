@@ -1,2 +1,2 @@
 FROM golang:onbuild
-EXPOSE 443
+EXPOSE 8080

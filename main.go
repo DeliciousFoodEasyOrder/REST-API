@@ -1,21 +1,14 @@
 package main
 
 import (
-	"net/http"
-
 	"github.com/DeliciousFoodEasyOrder/REST-API/restapi"
 )
 
 func main() {
-	port := ":443"
+	port := ":8080"
 
 	server := restapi.NewServer()
 
 	// server.Run(port)
-	http.ListenAndServeTLS(
-		port,
-		"/etc/letsencrypt/live/easyorder.cf/fullchain.pem",
-		"/etc/letsencrypt/live/easyorder.cf/privkey.pem",
-		server,
-	)
+	server.Run(port)
 }
