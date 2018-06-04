@@ -2,6 +2,7 @@ package restapi
 
 import (
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/auth0/go-jwt-middleware"
@@ -40,6 +41,8 @@ func init() {
 		},
 		SigningMethod: jwt.SigningMethodHS256,
 	})
+
+	os.MkdirAll("static/qrcodes", os.ModePerm)
 }
 
 // NewResp returns a new instance of Struct Resp
@@ -72,6 +75,9 @@ func NewServer() *negroni.Negroni {
 }
 
 func initRouter(router *mux.Router) {
+
+	router.PathPrefix("/static").Handler(http.StripPrefix("/static/",
+		http.FileServer(http.Dir("./static/"))))
 
 	// ## OAuth Collection
 	routeOAuthCollection(router)

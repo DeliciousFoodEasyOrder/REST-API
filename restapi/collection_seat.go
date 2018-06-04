@@ -6,6 +6,8 @@ import (
 	"regexp"
 	"strconv"
 
+	"github.com/skip2/go-qrcode"
+
 	"github.com/DeliciousFoodEasyOrder/REST-API/models"
 
 	"github.com/DeliciousFoodEasyOrder/REST-API/token"
@@ -84,6 +86,11 @@ func handlerCreateSeat() http.HandlerFunc {
 			panic(err)
 		}
 
+		qrCodePath := "static/qrcodes/" + strconv.Itoa(seat.MerchantID) + "/" +
+			strconv.Itoa(seat.SeatID) + ".png"
+		seat.QRCodeURL = "/" + qrCodePath
+		seatJSON, _ := json.Marshal(seat)
+		qrcode.WriteFile(string(seatJSON), qrcode.Medium, 256, qrCodePath)
 		err = models.SeatDAO.InsertOne(&seat)
 		if err != nil {
 			formatter.JSON(w, http.StatusInternalServerError, NewResp(
