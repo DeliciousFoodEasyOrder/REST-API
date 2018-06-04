@@ -3,6 +3,7 @@ package restapi
 import (
 	"encoding/json"
 	"net/http"
+	"os"
 	"regexp"
 	"strconv"
 
@@ -88,6 +89,7 @@ func handlerCreateSeat() http.HandlerFunc {
 
 		qrCodePath := "static/qrcodes/" + strconv.Itoa(seat.MerchantID) + "/" +
 			strconv.Itoa(seat.SeatID) + ".png"
+		os.MkdirAll(qrCodePath, os.ModePerm)
 		seat.QRCodeURL = "/" + qrCodePath
 		seatJSON, _ := json.Marshal(seat)
 		qrcode.WriteFile(string(seatJSON), qrcode.Medium, 256, qrCodePath)
