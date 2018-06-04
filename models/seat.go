@@ -44,6 +44,23 @@ func (*SeatDataAccessObject) FindByID(seatID int) *Seat {
 	return &seat
 }
 
+// FindByMerchantIDAndNumber finds a seat by MerchantID plus Number
+func (*SeatDataAccessObject) FindByMerchantIDAndNumber(merchantID int,
+	number string) *Seat {
+
+	var seat Seat
+	has, err := orm.Table(seat).Where("MerchantID = ? AND Number = ?",
+		merchantID, number).Get(&seat)
+	if err != nil {
+		panic(err)
+	}
+	if !has {
+		return nil
+	}
+	return &seat
+
+}
+
 // DeleteBySeatID deletes a seat by id
 func (*SeatDataAccessObject) DeleteBySeatID(seatID int) {
 	var seat Seat
