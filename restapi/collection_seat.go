@@ -111,7 +111,16 @@ func handlerCreateSeat() http.HandlerFunc {
 		os.MkdirAll(qrCodePath, os.ModePerm)
 		seat.QRCodeURL = "/" + qrCodePath
 		seatJSON, _ := json.Marshal(seat)
-		qrcode.WriteFile(string(seatJSON), qrcode.Medium, 256, qrCodePath)
+		err = qrcode.WriteFile(string(seatJSON), qrcode.Medium, 256, qrCodePath)
+		if err != nil {
+			formatter.JSON(w, http.StatusInternalServerError, NewResp(
+				http.StatusInternalServerError,
+				"创建座位失败",
+				NewErr("QRCode error", "see server log for more information"),
+			))
+			models.SeatDAO.DeleteBySeatID(seat.SeatID)
+			panic(err)
+		}
 		models.SeatDAO.UpdateOne(&seat)
 
 		formatter.JSON(w, http.StatusCreated, NewResp(
