@@ -84,15 +84,19 @@ func handlerCreateSeat() http.HandlerFunc {
 				"创建座位失败",
 				NewErr("Permission denied", "id mismatch"),
 			))
-			panic(err)
+			return
 		}
 
-		qrCodePath := "static/qrcodes/" + strconv.Itoa(seat.MerchantID) + "/" +
-			strconv.Itoa(seat.SeatID) + ".png"
-		os.MkdirAll(qrCodePath, os.ModePerm)
-		seat.QRCodeURL = "/" + qrCodePath
-		seatJSON, _ := json.Marshal(seat)
-		qrcode.WriteFile(string(seatJSON), qrcode.Medium, 256, qrCodePath)
+		if s := models.SeatDAO.FindByMerchantIDAndNumber(seat.MerchantID,
+			seat.Number); s != nil {
+			formatter.JSON(w, http.StatusBadRequest, NewResp(
+				http.StatusBadRequest,
+				"创建座位失败",
+				NewErr("Bad parameters", "seat already exist"),
+			))
+			return
+		}
+
 		err = models.SeatDAO.InsertOne(&seat)
 		if err != nil {
 			formatter.JSON(w, http.StatusInternalServerError, NewResp(
@@ -102,6 +106,14 @@ func handlerCreateSeat() http.HandlerFunc {
 			))
 			panic(err)
 		}
+		qrCodePath := "static/qrcodes/" + strconv.Itoa(seat.MerchantID) + "/" +
+			strconv.Itoa(seat.SeatID) + ".png"
+		os.MkdirAll(qrCodePath, os.ModePerm)
+		seat.QRCodeURL = "/" + qrCodePath
+		seatJSON, _ := json.Marshal(seat)
+		qrcode.WriteFile(string(seatJSON), qrcode.Medium, 256, qrCodePath)
+		models.SeatDAO.UpdateOne(&seat)
+
 		formatter.JSON(w, http.StatusCreated, NewResp(
 			http.StatusCreated,
 			"创建座位成功",
