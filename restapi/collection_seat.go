@@ -108,7 +108,7 @@ func handlerCreateSeat() http.HandlerFunc {
 		}
 		qrCodePath := "static/qrcodes/" + strconv.Itoa(seat.MerchantID) + "/" +
 			strconv.Itoa(seat.SeatID) + ".png"
-		os.MkdirAll(qrCodePath, os.ModePerm)
+		os.MkdirAll("static/qrcodes/"+strconv.Itoa(seat.MerchantID), os.ModePerm)
 		seat.QRCodeURL = "/" + qrCodePath
 		seatJSON, _ := json.Marshal(seat)
 		err = qrcode.WriteFile(string(seatJSON), qrcode.Medium, 256, qrCodePath)
