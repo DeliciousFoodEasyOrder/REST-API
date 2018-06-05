@@ -43,7 +43,7 @@ func (*FoodDataAccessObject) FindByID(foodID int) *Food {
 // FindByMerchantID finds foods by a merchant ID
 func (*FoodDataAccessObject) FindByMerchantID(merchantID int) []Food {
 	foods := make([]Food, 0)
-	err := orm.Table(foods).Where("MerchantID=?", merchantID).Find(&foods)
+	err := orm.Table("Food").Where("MerchantID=?", merchantID).Find(&foods)
 	if err != nil {
 		panic(err)
 	}
