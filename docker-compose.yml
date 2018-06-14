@@ -3,25 +3,26 @@ version: '3'
 services:
   rest-api:
     image: dfeo/rest-api
-    ports:
-      - "8080:8080"
     networks:
-      - main-net
+      - net
+      - nginx-net
     volumes:
-      - /root/docker-volumes/easyorder/static:/go/src/app/static
+      - /root/mnt/easyorder/static:/go/src/app/static
 
-  mysql:
+  db:
     image: "mysql:latest"
     volumes:
-      - /root/docker-volumes/mysql/mysql:/var/lib/mysql
-      - /root/docker-volumes/mysql/scripts:/docker-entrypoint-initdb.d
+      - /root/mnt/easyorder/mysql/mysql:/var/lib/mysql
+      - /root/mnt/easyorder/mysql/init:/docker-entrypoint-initdb.d
     environment:
-      MYSQL_ROOT_PASSWORD: passw0rd
+      MYSQL_ROOT_PASSWORD: password
     networks:
-      - main-net
+      - net
 
 networks:
-  main-net:
+  nginx-net:
+    external: true
+  net:
     ipam:
       driver: default
       config:
