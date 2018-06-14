@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"regexp"
+	"strconv"
 
 	"github.com/DeliciousFoodEasyOrder/REST-API/models"
 	"github.com/gorilla/mux"
@@ -19,6 +20,58 @@ func routeMerchantCollection(router *mux.Router) {
 	// ### Create a merchant [POST /merchants]
 	router.HandleFunc(base, handlerCreateMerchant()).
 		Methods(http.MethodPost)
+
+	// ### Update a merchant partially [PATCH /merchants/{id}]
+	router.HandleFunc(base+"/{id}", handlerSecure(handlerPatchMerchant())).
+		Methods(http.MethodPatch)
+}
+
+func handlerPatchMerchant() http.HandlerFunc {
+
+	return func(w http.ResponseWriter, req *http.Request) {
+		merchantIDStr := mux.Vars(req)["id"]
+
+		if cond, _ := regexp.MatchString("[1-9][0-9]*", merchantIDStr); !cond {
+			formatter.JSON(w, http.StatusBadRequest, NewResp(
+				http.StatusBadRequest,
+				"修改商户失败",
+				NewErr("Bad parameters", "id must be a number"),
+			))
+			return
+		}
+
+		merchantID, _ := strconv.Atoi(merchantIDStr)
+		var old *models.Merchant
+		if old = models.MerchantDAO.FindByID(merchantID); old == nil {
+			formatter.JSON(w, http.StatusBadRequest, NewResp(
+				http.StatusBadRequest,
+				"修改商户失败",
+				NewErr("Bad parameters", "merchant not found"),
+			))
+			return
+		}
+
+		var data models.Merchant
+		decoder := json.NewDecoder(req.Body)
+		decoder.Decode(&data)
+		data.MerchantID = merchantID
+		merchant, err := models.MerchantDAO.UpdateOne(&data)
+		if err != nil {
+			formatter.JSON(w, http.StatusInternalServerError, NewResp(
+				http.StatusInternalServerError,
+				"修改商户失败",
+				NewErr("Database error", "see server log for more information"),
+			))
+			panic(err)
+		}
+		formatter.JSON(w, http.StatusCreated, NewResp(
+			http.StatusCreated,
+			"修改商户成功",
+			data,
+		))
+
+	}
+
 }
 
 func handlerGetMerchant() http.HandlerFunc {

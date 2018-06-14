@@ -23,6 +23,15 @@ func (*MerchantDataAccessObject) InsertOne(m *Merchant) error {
 	return err
 }
 
+// UpdateOne updates a merchant
+func (*MerchantDataAccessObject) UpdateOne(m *Merchant) (*Merchant, error) {
+	_, err := orm.Id(m.MerchantID).Update(m)
+	if err != nil {
+		return nil, err
+	}
+	return MerchantDAO.FindByID(m.MerchantID), nil
+}
+
 // FindByID finds a merchant by MerchantID
 func (*MerchantDataAccessObject) FindByID(merchantID int) *Merchant {
 	var merchant Merchant

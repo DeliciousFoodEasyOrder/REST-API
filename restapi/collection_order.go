@@ -2,7 +2,6 @@ package restapi
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -232,7 +231,6 @@ func handlerPatchOrder() http.HandlerFunc {
 		decoder := json.NewDecoder(req.Body)
 		decoder.Decode(&data)
 		data.OrderID = orderID
-		fmt.Println(data)
 
 		if data.MerchantID != 0 {
 			formatter.JSON(w, http.StatusBadRequest, NewResp(
