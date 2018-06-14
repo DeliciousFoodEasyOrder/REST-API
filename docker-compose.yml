@@ -10,7 +10,7 @@ services:
       - /root/mnt/easyorder/static:/go/src/app/static
 
   db:
-    image: "mysql:latest"
+    image: "mysql:5.7"
     volumes:
       - /root/mnt/easyorder/mysql/mysql:/var/lib/mysql
       - /root/mnt/easyorder/mysql/init:/docker-entrypoint-initdb.d
