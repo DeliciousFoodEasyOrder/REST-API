@@ -23,7 +23,7 @@ func routeCustomerCollection(router *mux.Router) {
 
 	// ### Update a customer [PUT /customers/{customer_id}]
 	router.HandleFunc(base+"/{customer_id}", handlerPutCustomer()).
-		Methods(http.MethodPatch)
+		Methods(http.MethodPut)
 
 }
 
