@@ -6,6 +6,9 @@ type Merchant struct {
 	Email      string `json:"email"`
 	Phone      string `json:"phone"`
 	Password   string `json:"password"`
+	Name       string `json:"name"`
+	Address    string `json:"address"`
+	On         int    `json:"on"`
 }
 
 // MerchantDataAccessObject provides access for Model Merchant
