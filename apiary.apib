@@ -58,7 +58,10 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                 "merchant_id":1,
                 "email":"example@email.com",
                 "phone":"12345678901",
-                "password":"password"
+                "password":"password",
+                "name":"name",
+                "address":"address",
+                "on":0
             }
         }
 
@@ -70,7 +73,10 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
             "merchant_id":null,
             "email":"example@email.com",
             "phone":"12345678901",
-            "password":"password"
+            "password":"password",
+            "name":"name",
+            "address":"address",
+            "on":0
         }
 
 + Response 201 (application/json)
@@ -82,7 +88,44 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                 "merchant_id":1,
                 "email":"example@email.com",
                 "phone":"12345678901",
-                "password":"password"
+                "password":"password",
+                "name":"name",
+                "address":"address",
+                "on":0
+            }
+        }
+        
+### Update a merchant partially [PATCH /merchants/{id}]
+
++ Parameters
+
+    + id : 1 (int, required) - Merchant ID
+    
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer xxxx.yyyy.zzzz
+            
+    + Body
+
+            {
+                "on":1
+            }
+            
++ Response 201 (application/json)
+
+        {
+            "code":201,
+            "msg":"商户信息修改成功",
+            "data":{
+                "merchant_id":1,
+                "email":"example@email.com",
+                "phone":"12345678901",
+                "password":"password",
+                "name":"name",
+                "address":"address",
+                "on":1
             }
         }
 
@@ -252,7 +295,7 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
 + Request (application/json)
             
     + Body
-            
+
             {
                 "order_id":null,
                 "status":0,
@@ -322,7 +365,7 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
             Authorization: Bearer xxxx.yyyy.zzzz
             
     + Body
-    
+
             {
                 "status":0
             }
@@ -399,7 +442,7 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
             Authorization: Bearer xxxx.yyyy.zzzz
             
     + Body
-    
+
             {
                 "seat_id":null,
                 "number":"2A",
@@ -497,7 +540,7 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
             Authorization: Bearer xxxx.yyyy.zzzz
 
     + Body
-    
+
             {
                 "food_id":null,
                 "name":"香菇牛肉",
@@ -559,7 +602,7 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
 + Request (application/json)
 
     + Body
-    
+
             {
                 "customer_id":null,
                 "wechat_id":"asdf",
@@ -574,7 +617,7 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
             "balance":0.00
         }
 
-### Update a customer partially [PATCH /customers/{customer_id}]
+### Update a customer [PUT /customers/{customer_id}]
 
 + Parameters
 
@@ -583,11 +626,13 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
 + Request (application/json)
 
     + Body
-    
+
             {
+                "customer_id":1,
+                "wechat_id":"asdf",
                 "balance":100.00
             }
-            
+
 + Response 201 (application/json)
 
         {
