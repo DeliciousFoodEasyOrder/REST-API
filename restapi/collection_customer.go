@@ -3,11 +3,10 @@ package restapi
 import (
 	"encoding/json"
 	"net/http"
-	"github.com/DeliciousFoodEasyOrder/REST-API/models"
 	"regexp"
 	"strconv"
-	"fmt"
-	//"github.com/DeliciousFoodEasyOrder/REST-API/token"
+
+	"github.com/DeliciousFoodEasyOrder/REST-API/models"
 	"github.com/gorilla/mux"
 )
 
@@ -22,8 +21,8 @@ func routeCustomerCollection(router *mux.Router) {
 	router.HandleFunc(base, handlerCreateCustomer()).
 		Methods(http.MethodPost)
 
-	// ### Update a customer partially [PATCH /customers/{customer_id}]
-	router.HandleFunc(base+"/{customer_id}", handlerPatchCustomer()).
+	// ### Update a customer [PUT /customers/{customer_id}]
+	router.HandleFunc(base+"/{customer_id}", handlerPutCustomer()).
 		Methods(http.MethodPatch)
 
 }
@@ -31,9 +30,9 @@ func routeCustomerCollection(router *mux.Router) {
 func handlerGetCustomer() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, req *http.Request) {
-		
+
 		customerIDStr := mux.Vars(req)["customer_id"]
-	
+
 		if cond, _ := regexp.MatchString("[1-9][0-9]*", customerIDStr); !cond {
 			formatter.JSON(w, http.StatusBadRequest, NewResp(
 				http.StatusBadRequest,
@@ -42,7 +41,7 @@ func handlerGetCustomer() http.HandlerFunc {
 			))
 			return
 		}
-	
+
 		customerID, _ := strconv.Atoi(customerIDStr)
 		customer := models.CustomerDAO.FindByCustomerID(customerID)
 		if customer == nil {
@@ -53,7 +52,7 @@ func handlerGetCustomer() http.HandlerFunc {
 			))
 			return
 		}
-	
+
 		formatter.JSON(w, http.StatusOK, NewResp(
 			http.StatusOK,
 			"获取用户信息成功",
@@ -77,7 +76,7 @@ func handlerCreateCustomer() http.HandlerFunc {
 			))
 			panic(err)
 		}
-	
+
 		err = models.CustomerDAO.InsertOne(&customer)
 		if err != nil {
 			formatter.JSON(w, http.StatusInternalServerError, NewResp(
@@ -92,11 +91,11 @@ func handlerCreateCustomer() http.HandlerFunc {
 			"创建用户成功",
 			customer,
 		))
-		
+
 	}
 }
 
-func handlerPatchCustomer() http.HandlerFunc {
+func handlerPutCustomer() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, req *http.Request) {
 		customerIDStr := mux.Vars(req)["customer_id"]
@@ -125,17 +124,6 @@ func handlerPatchCustomer() http.HandlerFunc {
 		var data models.Customer
 		decoder := json.NewDecoder(req.Body)
 		decoder.Decode(&data)
-		data.CustomerID = customerID
-		fmt.Println(data)
-
-		/*if data.MerchantID != 0 {
-			formatter.JSON(w, http.StatusBadRequest, NewResp(
-				http.StatusBadRequest,
-				"修改订单失败",
-				NewErr("Bad paramters", "invalid modify"),
-			))
-			return
-		}*/
 
 		customer, err := models.CustomerDAO.UpdateOne(&data)
 		if err != nil {
