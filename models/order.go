@@ -19,6 +19,7 @@ type Order struct {
 
 // OrderHasFood Model
 type OrderHasFood struct {
+	ID      int `json:"id PK AUTOINCR"`
 	OrderID int `json:"order_id"`
 	FoodID  int `json:"food_id"`
 	Amount  int `json:"amount"`
