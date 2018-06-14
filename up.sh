@@ -1,1 +1,1 @@
-docker-compose -p easyorder -r https://raw.githubusercontent.com/DeliciousFoodEasyOrder/REST-API/deploy/docker-compose.yml up -d
+docker-compose -p easyorder up -d
