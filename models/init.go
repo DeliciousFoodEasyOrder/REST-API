@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	dbDSN      string = "easyorder:Passw0r_@(mysql)/easyorder"
+	dbDSN      string = "easyorder:Passw0r_@(db)/easyorder"
 	timeFormat string = "2006-01-02 15:04:05"
 )
 
