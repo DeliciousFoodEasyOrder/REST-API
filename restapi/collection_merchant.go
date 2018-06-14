@@ -67,7 +67,7 @@ func handlerPatchMerchant() http.HandlerFunc {
 		formatter.JSON(w, http.StatusCreated, NewResp(
 			http.StatusCreated,
 			"修改商户成功",
-			data,
+			merchant,
 		))
 
 	}
