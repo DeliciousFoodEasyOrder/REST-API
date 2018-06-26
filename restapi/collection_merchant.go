@@ -144,7 +144,7 @@ func handlerCreateIconOfMerchant() http.HandlerFunc {
 		}
 
 		formatter.JSON(w, http.StatusCreated, NewResp(
-			http.StatusOK,
+			http.StatusCreated,
 			"创建图片成功",
 			newMerchant,
 		))
