@@ -61,7 +61,8 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                 "password":"password",
                 "name":"name",
                 "address":"address",
-                "on":0
+                "on":0,
+                "icon_url": "/static/merchants/6"
             }
         }
 
@@ -76,7 +77,8 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
             "password":"password",
             "name":"name",
             "address":"address",
-            "on":0
+            "on":0,
+            "icon_url": ""
         }
 
 + Response 201 (application/json)
@@ -91,7 +93,8 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                 "password":"password",
                 "name":"name",
                 "address":"address",
-                "on":0
+                "on":0,
+                "icon_url": ""
             }
         }
         
@@ -125,7 +128,8 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                 "password":"password",
                 "name":"name",
                 "address":"address",
-                "on":1
+                "on":1,
+                "icon_url": "/static/merchants/6"
             }
         }
 
@@ -136,7 +140,7 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
 
     + merchant_id : 6 (int, required) - MERCHANT ID
     
-+ Request (application/json)
++ Request (multipart/form-data)
 
     + Headers
 
@@ -145,8 +149,7 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
     + Body
 
             {
-                Key(File): "uploadFile",
-                Value: "选择文件"
+                "uploadFile": "<file>"
             }
             
 + Response 201 (application/json)
@@ -165,8 +168,6 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                 "icon_url": "/static/merchants/6"
             }
         }
-
-
 
 ## Order Collection [/orders]
 
@@ -566,7 +567,8 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                 "name":"鱼香肉丝",
                 "description":"香喷喷的鱼香肉丝",
                 "price":"9.99",
-                "merchant_id":1
+                "merchant_id":1,
+                "icon_url": "/static/foods/21"
             }
         }
 
@@ -585,7 +587,8 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                 "name":"香菇牛肉",
                 "description":"好食又好看",
                 "price":"13.00",
-                "merchant_id":1
+                "merchant_id":1,
+                "icon_url": ""
             }
             
 + Response 201 (application/json)
@@ -598,7 +601,8 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                 "name":"香菇牛肉",
                 "description":"好食又好看",
                 "price":"13.00",
-                "merchant_id":1
+                "merchant_id":1,
+                "icon_url": ""
             }
         }
         
@@ -622,17 +626,16 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
 
     + food_id : 21 (int, required) - FOOD ID
     
-+ Request (application/json)
++ Request (multipart/form-data)
 
     + Headers
 
             Authorization: Bearer xxxx.yyyy.zzzz
-            
+
     + Body
 
             {
-                Key(File): "uploadFile",
-                Value: "选择文件"
+                "uploadFile": "<file>"
             }
             
 + Response 201 (application/json)
