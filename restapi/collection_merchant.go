@@ -37,9 +37,7 @@ func routeMerchantCollection(router *mux.Router) {
 		
 	// ### Get a merchant by id [GET /mechants/{merchant_id}]
 	router.HandleFunc(base+"/{merchant_id}", handlerSecure(handlerGetMerchantByID())).
-	    Methods(http.MethodGet)
-
-
+		Methods(http.MethodGet)
 }
 
 func handlerGetMerchantByID() http.HandlerFunc {
