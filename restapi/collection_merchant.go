@@ -33,8 +33,46 @@ func routeMerchantCollection(router *mux.Router) {
 
 	// ### Create a icon of a merchant [POST /merchants/{merchant_id}/icon]
 	router.HandleFunc(base+"/{merchant_id}/icon", handlerSecure(handlerCreateIconOfMerchant())).
-	    Methods(http.MethodPost)
+		Methods(http.MethodPost)
+		
+	// ### Get a merchant by id [GET /mechants/{merchant_id}]
+	router.HandleFunc(base+"/{merchant_id}", handlerSecure(handlerGetMerchantByID())).
+	    Methods(http.MethodGet)
 
+
+}
+
+func handlerGetMerchantByID() http.HandlerFunc {
+	return func(w http.ResponseWriter, req *http.Request) {
+		merchantIDStr := mux.Vars(req)["merchant_id"]
+
+		if cond, _ := regexp.MatchString("[1-9][0-9]*", merchantIDStr); !cond {
+			formatter.JSON(w, http.StatusBadRequest, NewResp(
+				http.StatusBadRequest,
+				"获取商家失败",
+				NewErr("Bad parameters", "merchant_id must be a number"),
+			))
+			return
+		}
+
+		merchantID, _ := strconv.Atoi(merchantIDStr)
+		merchant := models.MerchantDAO.FindByID(merchantID)
+
+		if merchant == nil {
+			formatter.JSON(w, http.StatusBadRequest, NewResp(
+				http.StatusBadRequest,
+				"获取商家失败",
+				NewErr("Bad parameters", "merchant not found"),
+			))
+			return
+		}
+
+		formatter.JSON(w, http.StatusOK, NewResp(
+			http.StatusOK,
+			"获取菜品成功",
+			merchant,
+		))
+	}
 }
 
 func handlerCreateIconOfMerchant() http.HandlerFunc {
@@ -120,12 +158,21 @@ func handlerCreateIconOfMerchant() http.HandlerFunc {
 			panic(err)
 		}
 
-		defer newFile.Close()
-		if _, err := newFile.Write(fileBytes); err != nil || newFile.Close() != nil {
+		//defer newFile.Close()
+		if _, err := newFile.Write(fileBytes); err != nil /*|| newFile.Close() != nil*/ {
 			formatter.JSON(w, http.StatusInternalServerError, NewResp(
 				http.StatusInternalServerError,
 				"创建图片失败",
 				NewErr("CANNOT_WRITE_FILE_TO_MERCHANTS", "PLEASE MODIFY IT"),
+			))
+			panic(err)
+		}
+
+		if err := newFile.Close(); err != nil {
+			formatter.JSON(w, http.StatusInternalServerError, NewResp(
+				http.StatusInternalServerError,
+				"创建图片失败",
+				NewErr("CANNOT_WRITE_FILE_TO_FOODS", "PLEASE MODIFY IT"),
 			))
 			panic(err)
 		}
