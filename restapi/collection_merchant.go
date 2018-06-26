@@ -8,7 +8,13 @@ import (
 
 	"github.com/DeliciousFoodEasyOrder/REST-API/models"
 	"github.com/gorilla/mux"
+
+	"os"
+	"path/filepath"
+	"io/ioutil"
 )
+
+const merchantsPath = "static/merchants/"
 
 func routeMerchantCollection(router *mux.Router) {
 	base := "/merchants"
@@ -24,6 +30,125 @@ func routeMerchantCollection(router *mux.Router) {
 	// ### Update a merchant partially [PATCH /merchants/{id}]
 	router.HandleFunc(base+"/{id}", handlerSecure(handlerPatchMerchant())).
 		Methods(http.MethodPatch)
+
+	// ### Create a icon of a merchant [POST /merchants/{merchant_id}/icon]
+	router.HandleFunc(base+"/{merchant_id}/icon", handlerSecure(handlerCreateIconOfMerchant())).
+	    Methods(http.MethodPost)
+
+}
+
+func handlerCreateIconOfMerchant() http.HandlerFunc {
+	return func(w http.ResponseWriter, req *http.Request) {
+		merchantIDStr := mux.Vars(req)["merchant_id"]
+
+
+		if cond, _ := regexp.MatchString("[1-9][0-9]*", merchantIDStr); !cond {
+			formatter.JSON(w, http.StatusBadRequest, NewResp(
+				http.StatusBadRequest,
+				"获取对应商家失败",
+				NewErr("Bad parameters", "merchant_id must be a number"),
+			))
+			return
+		}
+
+		merchantID, _ := strconv.Atoi(merchantIDStr)
+		merchant := models.MerchantDAO.FindByID(merchantID)
+		if merchant == nil {
+			formatter.JSON(w, http.StatusBadRequest, NewResp(
+				http.StatusBadRequest,
+				"获取对应商家失败",
+				NewErr("Bad parameters", "merchant not found"),
+			))
+			return
+		}
+
+
+		req.Body = http.MaxBytesReader(w, req.Body, maxUploadSize)
+		if err := req.ParseMultipartForm(maxUploadSize); err != nil {
+			formatter.JSON(w, http.StatusBadRequest, NewResp(
+				http.StatusBadRequest,
+				"创建图片失败",
+				NewErr("FILE_TOO_BIG", "PLEASE MINIFY IT"),
+			))
+			panic(err)
+		}
+
+		//fileType := req.PostFormValue("type") 这个是有type框的时候这么写
+		//要这么写
+		file, _, err := req.FormFile("uploadFile")
+		if err != nil {
+			formatter.JSON(w, http.StatusBadRequest, NewResp(
+				http.StatusBadRequest,
+				"创建图片失败",
+				NewErr("INVALID_FILE", "PLEASE MODIFY IT"),
+			))
+			panic(err)
+		}
+
+		defer file.Close()
+		fileBytes, err := ioutil.ReadAll(file)
+		if err != nil {
+			formatter.JSON(w, http.StatusBadRequest, NewResp(
+				http.StatusBadRequest,
+				"创建图片失败",
+				NewErr("INVALID_FILE", "PLEASE MODIFY IT"),
+			))
+			panic(err)
+		}
+
+		fileType := http.DetectContentType(fileBytes)
+		if fileType != "image/jpeg" && fileType != "image/jpg" &&
+		    fileType != "image/gif" && fileType != "image/png" {
+				formatter.JSON(w, http.StatusBadRequest, NewResp(
+					http.StatusBadRequest,
+					"创建图片失败",
+					NewErr("INVALID_FILE_TYPE", "PLEASE MODIFY THE TYPE"),
+				))
+				panic(err)
+		}
+
+		// 向static/merchants/下写文件
+		fileName := merchantIDStr
+		newMerchantsPath := filepath.Join(merchantsPath, fileName)
+		newFile, err := os.Create(newMerchantsPath)
+		if err != nil {
+			formatter.JSON(w, http.StatusInternalServerError, NewResp(
+				http.StatusInternalServerError,
+				"创建图片失败",
+				NewErr("CANNOT_WRITE_FILE_TO_MERCHANTS", "PLEASE MODIFY IT"),
+			))
+			panic(err)
+		}
+
+		defer newFile.Close()
+		if _, err := newFile.Write(fileBytes); err != nil || newFile.Close() != nil {
+			formatter.JSON(w, http.StatusInternalServerError, NewResp(
+				http.StatusInternalServerError,
+				"创建图片失败",
+				NewErr("CANNOT_WRITE_FILE_TO_MERCHANTS", "PLEASE MODIFY IT"),
+			))
+			panic(err)
+		}
+
+		// 将图片的url插入数据库(merchant表)
+		merchant.IconURL = filepath.Join("/", newMerchantsPath)
+		newMerchant, err := models.MerchantDAO.UpdateOne(merchant)
+
+		if err != nil {
+			formatter.JSON(w, http.StatusInternalServerError, NewResp(
+				http.StatusInternalServerError,
+				"创建图片失败",
+				NewErr("Database error", "see server log for more details"),
+			))
+			panic(err)
+		}
+
+		formatter.JSON(w, http.StatusOK, NewResp(
+			http.StatusOK,
+			"创建图片成功",
+			newMerchant,
+		))
+	}
 }
 
 func handlerPatchMerchant() http.HandlerFunc {

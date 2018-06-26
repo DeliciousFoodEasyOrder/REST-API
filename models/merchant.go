@@ -9,6 +9,7 @@ type Merchant struct {
 	Name       string `json:"name"`
 	Address    string `json:"address"`
 	On         int    `json:"on"`
+	IconURL    string `json:"icon_url"`
 }
 
 // MerchantDataAccessObject provides access for Model Merchant

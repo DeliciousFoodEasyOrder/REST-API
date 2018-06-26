@@ -43,6 +43,8 @@ func init() {
 	})
 
 	os.MkdirAll("static/qrcodes", os.ModePerm)
+	os.MkdirAll("static/merchants", os.ModePerm)
+	os.MkdirAll("static/foods", os.ModePerm)
 }
 
 // NewResp returns a new instance of Struct Resp

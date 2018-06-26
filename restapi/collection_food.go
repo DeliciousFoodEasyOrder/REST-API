@@ -10,7 +10,14 @@ import (
 
 	"github.com/DeliciousFoodEasyOrder/REST-API/token"
 	"github.com/gorilla/mux"
+
+	"path/filepath"
+	"os"
+	"io/ioutil"
 )
+
+const maxUploadSize = 4 * 1024 * 1024
+const foodsPath = "static/foods/"
 
 func routeFoodCollection(router *mux.Router) {
 	base := "/foods"
@@ -30,7 +37,134 @@ func routeFoodCollection(router *mux.Router) {
 	// ### Delete a food [DELETE /foods/{food_id}]
 	router.HandleFunc(base+"/{food_id}", handlerSecure(handlerDeleteFood())).
 		Methods(http.MethodDelete)
+
+	// ### Create a icon of a food [POST /foods/{food_id}/icon]
+	router.HandleFunc(base+"/{food_id}/icon", handlerSecure(handlerCreateIconOfFood())).
+	    Methods(http.MethodPost)
 }
+
+func handlerCreateIconOfFood() http.HandlerFunc {
+	return func(w http.ResponseWriter, req *http.Request) {
+		foodIDStr := mux.Vars(req)["food_id"]
+
+		if cond, _ := regexp.MatchString("[1-9][0-9]*", foodIDStr); !cond {
+			formatter.JSON(w, http.StatusBadRequest, NewResp(
+				http.StatusBadRequest,
+				"获取对应菜品失败",
+				NewErr("Bad parameters", "food_id must be a number"),
+			))
+			return
+		}
+
+		foodID, _ := strconv.Atoi(foodIDStr)
+		claims := token.ParseClaims(getTokenString(req))
+		food := models.FoodDAO.FindByID(foodID)
+
+		if food == nil {
+			formatter.JSON(w, http.StatusBadRequest, NewResp(
+				http.StatusBadRequest,
+				"获取对应菜品失败",
+				NewErr("Bad parameters", "food not found"),
+			))
+			return
+		}
+
+		if food.MerchantID != int(claims["aud"].(float64)) {
+			formatter.JSON(w, http.StatusBadRequest, NewResp(
+				http.StatusBadRequest,
+				"获取菜品失败",
+				NewErr("Permission denied", "id mismatch"),
+			))
+			return
+		}
+
+		req.Body = http.MaxBytesReader(w, req.Body, maxUploadSize)
+		if err := req.ParseMultipartForm(maxUploadSize); err != nil {
+			formatter.JSON(w, http.StatusBadRequest, NewResp(
+				http.StatusBadRequest,
+				"创建图片失败",
+				NewErr("FILE_TOO_BIG", "PLEASE MINIFY IT"),
+			))
+			panic(err)
+		}
+
+		//fileType := req.PostFormValue("type") 这个是有type框的时候这么写
+		//要这么写吗
+		file, _, err := req.FormFile("uploadFile")
+		if err != nil {
+			formatter.JSON(w, http.StatusBadRequest, NewResp(
+				http.StatusBadRequest,
+				"创建图片失败",
+				NewErr("INVALID_FILE", "PLEASE MODIFY IT"),
+			))
+			panic(err)
+		}
+
+		defer file.Close()
+		fileBytes, err := ioutil.ReadAll(file)
+		if err != nil {
+			formatter.JSON(w, http.StatusBadRequest, NewResp(
+				http.StatusBadRequest,
+				"创建图片失败",
+				NewErr("INVALID_FILE", "PLEASE MODIFY IT"),
+			))
+			panic(err)
+		}
+
+		fileType := http.DetectContentType(fileBytes)
+		if fileType != "image/jpeg" && fileType != "image/jpg" &&
+		    fileType != "image/gif" && fileType != "image/png" {
+				formatter.JSON(w, http.StatusBadRequest, NewResp(
+					http.StatusBadRequest,
+					"创建图片失败",
+					NewErr("INVALID_FILE_TYPE", "PLEASE MODIFY THE TYPE"),
+				))
+				panic(err)
+		}
+
+		// 向static/foods/下写文件
+		fileName := foodIDStr
+		newFoodsPath := filepath.Join(foodsPath, fileName)
+		newFile, err := os.Create(newFoodsPath)
+		if err != nil {
+			formatter.JSON(w, http.StatusInternalServerError, NewResp(
+				http.StatusInternalServerError,
+				"创建图片失败",
+				NewErr("CANNOT_WRITE_FILE_TO_FOODS", "PLEASE MODIFY IT"),
+			))
+			panic(err)
+		}
+
+		defer newFile.Close()
+		if _, err := newFile.Write(fileBytes); err != nil || newFile.Close() != nil {
+			formatter.JSON(w, http.StatusInternalServerError, NewResp(
+				http.StatusInternalServerError,
+				"创建图片失败",
+				NewErr("CANNOT_WRITE_FILE_TO_FOODS", "PLEASE MODIFY IT"),
+			))
+			panic(err)
+		}
+
+		// 将图片的url插入数据库(food表)
+		food.IconURL = filepath.Join("/", newFoodsPath)
+		err = models.FoodDAO.UpdateOne(food)
+		if err != nil {
+			formatter.JSON(w, http.StatusInternalServerError, NewResp(
+				http.StatusInternalServerError,
+				"创建图片失败",
+				NewErr("Database error", "see server log for more details"),
+			))
+			panic(err)
+		}
+
+		formatter.JSON(w, http.StatusOK, NewResp(
+			http.StatusOK,
+			"创建图片成功",
+			food,
+		))
+	}
+}
+
 
 func handlerDeleteFood() http.HandlerFunc {
 

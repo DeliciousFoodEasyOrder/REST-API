@@ -7,6 +7,7 @@ type Food struct {
 	Description string  `json:"description"`
 	Price       float32 `json:"price"`
 	MerchantID  int     `json:"merchant_id"`
+	IconURL     string  `json:"icon_url"`
 }
 
 // FoodWithAmount specifies the amount in an specific order
