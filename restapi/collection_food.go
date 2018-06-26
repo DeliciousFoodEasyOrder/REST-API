@@ -157,7 +157,7 @@ func handlerCreateIconOfFood() http.HandlerFunc {
 			panic(err)
 		}
 
-		formatter.JSON(w, http.StatusOK, NewResp(
+		formatter.JSON(w, http.StatusCreated, NewResp(
 			http.StatusOK,
 			"创建图片成功",
 			food,

@@ -61,8 +61,7 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                 "password":"password",
                 "name":"name",
                 "address":"address",
-                "on":0,
-                "icon_url":"/static/merchants/1.png"
+                "on":0
             }
         }
 
@@ -77,8 +76,7 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
             "password":"password",
             "name":"name",
             "address":"address",
-            "on":0,
-            "icon_url":""
+            "on":0
         }
 
 + Response 201 (application/json)
@@ -93,8 +91,7 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                 "password":"password",
                 "name":"name",
                 "address":"address",
-                "on":0,
-                "icon_url":""
+                "on":0
             }
         }
         
@@ -128,10 +125,48 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                 "password":"password",
                 "name":"name",
                 "address":"address",
-                "on":1,
-                "icon_url":"/static/merchants/1.png"
+                "on":1
             }
         }
+
+
+### Create an icon of a merchant [POST /merchants/{merchant_id}/icon]
+
++ Parameters
+
+    + merchant_id : 6 (int, required) - MERCHANT ID
+    
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer xxxx.yyyy.zzzz
+            
+    + Body
+
+            {
+                Key(File): "uploadFile",
+                Value: "选择文件"
+            }
+            
++ Response 201 (application/json)
+
+        {
+            "code": 201,
+            "msg": "创建图片成功",
+            "data": {
+                "merchant_id": 6,
+                "email": "13719345192@163.com",
+                "phone": "13719345192",
+                "password": "123456",
+                "name": "",
+                "address": "",
+                "on": 0,
+                "icon_url": "/static/merchants/6"
+            }
+        }
+
+
 
 ## Order Collection [/orders]
 
@@ -499,15 +534,13 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                 "name":"鱼香肉丝",
                 "description":"香喷喷的鱼香肉丝",
                 "price":"9.99",
-                "merchant_id":1,
-                "icon_url":"/static/foods/1.png"
+                "merchant_id":1
             },{
                 "food_id":2,
                 "name":"兰州拉面",
                 "description":"清真的拉面",
                 "price":"39.99",
-                "merchant_id":1,
-                "icon_url":"/static/foods/1.png"
+                "merchant_id":1
             }]
         }
 
@@ -533,8 +566,7 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                 "name":"鱼香肉丝",
                 "description":"香喷喷的鱼香肉丝",
                 "price":"9.99",
-                "merchant_id":1,
-                "icon_url":"/static/foods/1.png"
+                "merchant_id":1
             }
         }
 
@@ -553,8 +585,7 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                 "name":"香菇牛肉",
                 "description":"好食又好看",
                 "price":"13.00",
-                "merchant_id":1,
-                "icon_url":""
+                "merchant_id":1
             }
             
 + Response 201 (application/json)
@@ -567,8 +598,7 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                 "name":"香菇牛肉",
                 "description":"好食又好看",
                 "price":"13.00",
-                "merchant_id":1,
-                "icon_url":""
+                "merchant_id":1
             }
         }
         
@@ -585,6 +615,41 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
             Authorization: Bearer xxxx.yyyy.zzzz
 
 + Response 204
+
+### Create an icon of a food [POST /foods/{food_id}/icon]
+
++ Parameters
+
+    + food_id : 21 (int, required) - FOOD ID
+    
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer xxxx.yyyy.zzzz
+            
+    + Body
+
+            {
+                Key(File): "uploadFile",
+                Value: "选择文件"
+            }
+            
++ Response 201 (application/json)
+
+        {
+            "code": 201,
+            "msg": "创建图片成功",
+            "data": {
+                "food_id": 21,
+                "name": "11",
+                "description": "hh",
+                "price": 1,
+                "merchant_id": 6,
+                "icon_url": "/static/foods/21"
+            }
+        }
+
 
 ## Customer Collection [/customers]
 
