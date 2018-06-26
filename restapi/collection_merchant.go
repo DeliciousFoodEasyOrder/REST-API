@@ -69,7 +69,7 @@ func handlerGetMerchantByID() http.HandlerFunc {
 
 		formatter.JSON(w, http.StatusOK, NewResp(
 			http.StatusOK,
-			"获取菜品成功",
+			"获取商家成功",
 			merchant,
 		))
 	}
