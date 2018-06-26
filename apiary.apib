@@ -65,6 +65,29 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                 "icon_url": "/static/merchants/6"
             }
         }
+        
+### Get a merchant by id [GET /mechants/{merchant_id}]
+
++ Parameters
+
+    + merchant_id : 1 (int, required) - MERCHANT ID
+
++ Response 200 (application / json)
+
+        {
+            "code": 200,
+            "msg" : "获取商家成功",
+            "data" : {
+                "merchant_id": 1,
+                "email" : "dr.paper@live.com",
+                "phone" : "17665310114",
+                "password" : "password",
+                "name" : "这碗翔",
+                "address" : "至二路口",
+                "on" : 0,
+                "icon_url" : ""
+            }
+        }
 
 ### Create a merchant [POST /merchants]
 
