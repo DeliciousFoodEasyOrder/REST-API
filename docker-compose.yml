@@ -7,7 +7,7 @@ services:
       - net
       - nginx-net
     volumes:
-      - /root/mnt/easyorder/static:/go/src/app/static
+      - /root/mnt/easyorder/static:/static
 
   db:
     image: "mysql:5.7"
