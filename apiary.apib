@@ -65,6 +65,29 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                 "icon_url": "/static/merchants/6"
             }
         }
+        
+### Get a merchant by id [GET /mechants/{merchant_id}]
+
++ Parameters
+
+    + merchant_id : 1 (int, required) - MERCHANT ID
+
++ Response 200 (application / json)
+
+        {
+            "code": 200,
+            "msg" : "获取商家成功",
+            "data" : {
+                "merchant_id": 1,
+                "email" : "dr.paper@live.com",
+                "phone" : "17665310114",
+                "password" : "password",
+                "name" : "这碗翔",
+                "address" : "至二路口",
+                "on" : 0,
+                "icon_url" : ""
+            }
+        }
 
 ### Create a merchant [POST /merchants]
 
@@ -204,14 +227,16 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                     "description":"香喷喷的鱼香肉丝",
                     "price":9.99,
                     "merchant_id":1,
-                    "amount":2
+                    "amount":2,
+                    "icon_url": "/static/foods/1"
                 },{
                     "food_id":2,
                     "name":"兰州拉面",
                     "description":"清真的拉面",
                     "price":39.99,
                     "merchant_id":1,
-                    "amount":1
+                    "amount":1,
+                    "icon_url": "/static/foods/2"
                 }]
             },{
                 "order_id":2,
@@ -227,7 +252,8 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                     "description":"香喷喷的鱼香肉丝",
                     "price":9.99,
                     "merchant_id":1,
-                    "amount":2
+                    "amount":2,
+                    "icon_url": "/static/foods/1"
                 }]
             }]
         }
@@ -259,14 +285,16 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                     "description":"香喷喷的鱼香肉丝",
                     "price":9.99,
                     "merchant_id":1,
-                    "amount":2
+                    "amount":2,
+                    "icon_url": "/static/foods/1"
                 },{
                     "food_id":2,
                     "name":"兰州拉面",
                     "description":"清真的拉面",
                     "price":"39.99",
                     "merchant_id":1,
-                    "amount":1
+                    "amount":1,
+                    "icon_url": "/static/foods/2"
                 }]
             },{
                 "order_id":2,
@@ -282,7 +310,8 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                     "description":"香喷喷的鱼香肉丝",
                     "price":"9.99",
                     "merchant_id":1,
-                    "amount":2
+                    "amount":2,
+                    "icon_url": "/static/foods/1"
                 }]
             }]
         }
@@ -318,14 +347,16 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                     "description":"香喷喷的鱼香肉丝",
                     "price":"9.99",
                     "merchant_id":1,
-                    "amount":2
+                    "amount":2,
+                    "icon_url": "/static/foods/1"
                 },{
                     "food_id":2,
                     "name":"兰州拉面",
                     "description":"清真的拉面",
                     "price":"39.99",
                     "merchant_id":1,
-                    "amount":2
+                    "amount":2,
+                    "icon_url": "/static/foods/2"
                 }]
             }
         }
@@ -350,14 +381,16 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                     "description":"香喷喷的鱼香肉丝",
                     "price":"9.99",
                     "merchant_id":1,
-                    "amount":2
+                    "amount":2,
+                    "icon_url": "/static/foods/1"
                 },{
                     "food_id":2,
                     "name":"兰州拉面",
                     "description":"清真的拉面",
                     "price":"39.99",
                     "merchant_id":1,
-                    "amount":1
+                    "amount":1,
+                    "icon_url": "/static/foods/2"
                 }]
             }
             
@@ -380,14 +413,16 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                     "description":"香喷喷的鱼香肉丝",
                     "price":"9.99",
                     "merchant_id":1,
-                    "amount":2
+                    "amount":2,
+                    "icon_url": "/static/foods/1"
                 },{
                     "food_id":2,
                     "name":"兰州拉面",
                     "description":"清真的拉面",
                     "price":"39.99",
                     "merchant_id":1,
-                    "amount":1
+                    "amount":1,
+                    "icon_url": "/static/foods/2"
                 }]
             }
         }
@@ -429,14 +464,16 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                     "description":"香喷喷的鱼香肉丝",
                     "price":"9.99",
                     "merchant_id":1,
-                    "amount":2
+                    "amount":2,
+                    "icon_url": "/static/foods/1"
                 },{
                     "food_id":2,
                     "name":"兰州拉面",
                     "description":"清真的拉面",
                     "price":"39.99",
                     "merchant_id":1,
-                    "amount":1
+                    "amount":1,
+                    "icon_url": "/static/foods/2"
                 }]
             }
         }
@@ -535,13 +572,15 @@ REST APIs for Project [EasyOrder](https://github.com/DeliciousFoodEasyOrder).
                 "name":"鱼香肉丝",
                 "description":"香喷喷的鱼香肉丝",
                 "price":"9.99",
-                "merchant_id":1
+                "merchant_id":1,
+                "icon_url": "/static/foods/1"
             },{
                 "food_id":2,
                 "name":"兰州拉面",
                 "description":"清真的拉面",
                 "price":"39.99",
-                "merchant_id":1
+                "merchant_id":1,
+                "icon_url": "/static/foods/2"
             }]
         }
 

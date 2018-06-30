@@ -89,7 +89,7 @@ func handlerCreateIconOfFood() http.HandlerFunc {
 		}
 
 		//fileType := req.PostFormValue("type") 这个是有type框的时候这么写
-		//要这么写吗
+		//要这么写
 		file, _, err := req.FormFile("uploadFile")
 		if err != nil {
 			formatter.JSON(w, http.StatusBadRequest, NewResp(
@@ -135,8 +135,17 @@ func handlerCreateIconOfFood() http.HandlerFunc {
 			panic(err)
 		}
 
-		defer newFile.Close()
-		if _, err := newFile.Write(fileBytes); err != nil || newFile.Close() != nil {
+		//defer newFile.Close()
+		if _, err := newFile.Write(fileBytes); err != nil /*|| newFile.Close() != nil*/ {
+			formatter.JSON(w, http.StatusInternalServerError, NewResp(
+				http.StatusInternalServerError,
+				"创建图片失败",
+				NewErr("CANNOT_WRITE_FILE_TO_FOODS", "PLEASE MODIFY IT"),
+			))
+			panic(err)
+		}
+		
+		if err := newFile.Close(); err != nil {
 			formatter.JSON(w, http.StatusInternalServerError, NewResp(
 				http.StatusInternalServerError,
 				"创建图片失败",

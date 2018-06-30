@@ -71,3 +71,5 @@ func (*MerchantDataAccessObject) FindByPhone(phone string) *Merchant {
 	}
 	return &merchant
 }
+
+
