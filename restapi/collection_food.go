@@ -241,7 +241,43 @@ func handlerCreateFood() http.HandlerFunc {
 			))
 			return
 		}
+		//如果没有icon就默认添加一个
+		/*
+		if food.IconURL == "" {
+			food.IconURL = filepath.Join("/", newFoodsPath)
+			fileName := food.FoodID
+		    newFoodsPath := filepath.Join(foodsPath, fileName)
+		    newFile, err := os.Create(newFoodsPath)
+		    if err != nil {
+			    formatter.JSON(w, http.StatusInternalServerError, NewResp(
+				    http.StatusInternalServerError,
+				    "创建图片失败",
+				    NewErr("CANNOT_WRITE_FILE_TO_FOODS", "PLEASE MODIFY IT"),
+			    ))
+			    panic(err)
+		    }
 
+		    //defer newFile.Close()
+		    if _, err := newFile.Write(fileBytes); err != nil {
+			    formatter.JSON(w, http.StatusInternalServerError, NewResp(
+				    http.StatusInternalServerError,
+				    "创建图片失败",
+				    NewErr("CANNOT_WRITE_FILE_TO_FOODS", "PLEASE MODIFY IT"),
+			    ))
+			    panic(err)
+		    }
+		
+		    if err := newFile.Close(); err != nil {
+			    formatter.JSON(w, http.StatusInternalServerError, NewResp(
+				    http.StatusInternalServerError,
+				    "创建图片失败",
+				    NewErr("CANNOT_WRITE_FILE_TO_FOODS", "PLEASE MODIFY IT"),
+			    ))
+			    panic(err)
+		    }
+
+
+		}*/
 		err = models.FoodDAO.InsertOne(&food)
 		if err != nil {
 			formatter.JSON(w, http.StatusInternalServerError, NewResp(
