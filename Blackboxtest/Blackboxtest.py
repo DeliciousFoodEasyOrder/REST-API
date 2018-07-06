@@ -2,7 +2,8 @@ import urllib
 import urllib3
 import httplib2
 import requests
-
+import multipart
+from requests_toolbelt import MultipartEncoder
 url = "https://www.sysu-easyorder.top"
 
 # Create a merchant
@@ -56,6 +57,29 @@ else:
 
 
 # Create an icon of a merchant
+headers = {'Content-Type':'multipart/form-data',
+          'Authorization':'Bearer'+' '+token}
+fr = open("C:\\Python\homework6-2.png", "rb")
+
+multipart_encoder = MultipartEncoder(
+    {'uploadFile':("homework6-2.png", open("C:\\Python\homework6-2.png", "rb"))}
+)
+
+headers['Content-Type'] = multipart_encoder.content_type
+r = requests.post(url+"/merchants/5/icon", data=multipart_encoder, headers=headers)
+if r.json()['code'] == 201 and r.json()['data']['merchant_id'] == 5:
+    print("Creat an icon of a merchant success")
+else:
+    print("Creat an icon of a merchant failed, program shut down")
+    exit(0)
+
+
+# content = fr.read()
+# print(content)
+# post_data = MultipartEncoder({'uploadFile' : open('C:\Python\homework6-2.png', 'rb')})
+# files = {'uploadFile': (None, open('C:\Python\homework6-2.png', 'rb'))}
+# post_data = '{"uploadFile":"<content>"}'
+
 
 # Create a customer
 headers = {'Content-Type':'application/json'}
@@ -119,6 +143,21 @@ else:
     exit(0)
 
 # Create an icon of a food
+headers = {'Content-Type':'multipart/form-data',
+          'Authorization':'Bearer'+' '+token}
+fr = open("C:\\Python\homework6-2.png", "rb")
+
+multipart_encoder = MultipartEncoder(
+    {'uploadFile':("homework6-2.png", open("C:\\Python\homework6-2.png", "rb"))}
+)
+
+headers['Content-Type'] = multipart_encoder.content_type
+r = requests.post(url+"/merchants/5/icon", data=multipart_encoder, headers=headers)
+if r.json()['code'] == 201 and r.json()['data']['merchant_id'] == 5:
+    print("Creat an icon of a merchant success")
+else:
+    print("Creat an icon of a merchant failed, program shut down")
+    exit(0)
 
 # Create a food
 headers={'Content-Type':'application/json',
@@ -161,7 +200,22 @@ else:
     print("Delete a food failed, program shut down")
 
 # Create an icon of a food
+headers = {'Content-Type':'multipart/form-data',
+          'Authorization':'Bearer'+' '+token}
+fr = open("C:\\Python\homework6-2.png", "rb")
 
+multipart_encoder = MultipartEncoder(
+    {'uploadFile':("homework6-2.png", open("C:\\Python\homework6-2.png", "rb"))}
+)
+
+headers['Content-Type'] = multipart_encoder.content_type
+
+r = requests.post(url+"/foods/47/icon", data=multipart_encoder, headers=headers)
+if r.json()['code'] == 201 and r.json()['data']['food_id'] == 47:
+    print("Creat an icon of a food success")
+else:
+    print("Creat an icon of a food failed, program shut down")
+    exit(0)
 
 # Create an order
 headers={'Content-Type':'application/json'}
